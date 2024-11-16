@@ -59,6 +59,6 @@ contract CustomSmartWallet is Ownable {
         uint256 amount = uint256(bytes32(message[20:52]));
 
         // transfer the funds
-        // IERC20(token).transfer(msg.sender, amount);
+        IERC20(token).transfer(msg.sender, amount);
     }
 }
