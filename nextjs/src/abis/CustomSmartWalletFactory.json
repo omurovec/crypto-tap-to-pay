@@ -1,0 +1,87 @@
+[
+  {
+    "type": "function",
+    "name": "createSmartWallet",
+    "inputs": [
+      { "name": "px", "type": "bytes32", "internalType": "bytes32" },
+      { "name": "py", "type": "bytes32", "internalType": "bytes32" },
+      {
+        "name": "initialWithdrawLimit",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "getWalletAddress",
+    "inputs": [
+      { "name": "owner", "type": "address", "internalType": "address" },
+      { "name": "px", "type": "bytes32", "internalType": "bytes32" },
+      { "name": "py", "type": "bytes32", "internalType": "bytes32" },
+      {
+        "name": "initialWithdrawLimit",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      { "name": "smartWallet", "type": "address", "internalType": "address" },
+      { "name": "deployed", "type": "bool", "internalType": "bool" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "precomputeWalletAddress",
+    "inputs": [
+      { "name": "ownerAddress", "type": "address", "internalType": "address" },
+      { "name": "px", "type": "bytes32", "internalType": "bytes32" },
+      { "name": "py", "type": "bytes32", "internalType": "bytes32" },
+      {
+        "name": "initialWithdrawLimit",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "smartWallets",
+    "inputs": [
+      { "name": "owner", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [
+      { "name": "smartWallet", "type": "address", "internalType": "address" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "event",
+    "name": "CustomSmartWalletFactory__SmartWalletCreated",
+    "inputs": [
+      {
+        "name": "owner",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "smartWalletAddress",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "error",
+    "name": "CustomSmartWalletFactory__WalletAlreadyExists",
+    "inputs": []
+  }
+]
