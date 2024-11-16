@@ -16,7 +16,7 @@ async function main() {
   // We'll create a message containing:
   // - token address (20 bytes)
   // - amount (32 bytes)
-  const tokenAddress = "0x1234567890123456789012345678901234567890";
+  const tokenAddress = "0x5615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f";
   const amount = ethers.parseEther("1.0");
 
   // Concatenate the message parts

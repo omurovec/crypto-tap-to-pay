@@ -82,13 +82,13 @@ async function verify(px, py, messageHash, r, s, message) {
 if (require.main === module) {
   // Replace these with the values from your generate script
   const testValues = {
-    px: "0x7c2cda854c888b3c5ef4ddb5cd827efd4d8fb93545aacaf5db348b9784128957", // public key x coordinate
-    py: "0xe55627f354dca80a13e75d7d313bd04ba0a9ae3f0c1a4f6dee6fc0a611d64a3c", // public key y coordinate
-    messageHash: "0x33e817516544cde5b2c41625384b6cd8a46311438a2ccd0c48506ced9a59e133", // message hash
-    r: "0x703e05c727df6f846479cf554b1600a61d69fb03961604b60b95e3fb35733093", // signature r value
-    s: "0x0b823f582db05d34e6c7f97c05f34f872e930194c0d415bf9545faf502326a36", // signature s value
+    px: "0xd961005d2b19b117c27187fb4bffc0d5b96c8f39eb0c7476fb69e6efc88fa5be", // public key x coordinate
+    py: "0x848150bcbdc70e6545f27070b840f9f5188bb8cad0cab28e107e200be9cde9d2", // public key y coordinate
+    messageHash: "0xe4d0913917d989d1ab859b505e44b82b5f965f2bee770b1326e454b78a4bd461", // message hash
+    r: "0x15c0a726128247fa8915857e30cc0454ca7a6c6ebaecf5b06e0911ec53e30ff6", // signature r value
+    s: "0x5f24e9f8ad87806c13a060d21e731d4ac90ed0fda618dd55a8a93b4c16a592b4", // signature s value
     message:
-      "0x12345678901234567890123456789012345678900000000000000000000000000000000000000000000000000de0b6b3a7640000", // original message
+      "0x5615deb798bb3e4dfa0139dfa1b3d433cc23b72f0000000000000000000000000000000000000000000000000de0b6b3a7640000", // original message
   };
 
   verify(testValues.px, testValues.py, testValues.messageHash, testValues.r, testValues.s, testValues.message).then(

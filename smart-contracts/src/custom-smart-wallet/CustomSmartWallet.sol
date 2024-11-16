@@ -6,8 +6,6 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { P256 } from "@openzeppelin/contracts/utils/cryptography/P256.sol";
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
-import { console } from "forge-std/src/console.sol";
-
 error CustomSmartWallet__InvalidPublicKey();
 error CustomSmartWallet__InvalidSignature();
 error CustomSmartWallet__InvalidMessageHash();
@@ -61,6 +59,6 @@ contract CustomSmartWallet is Ownable {
         uint256 amount = uint256(bytes32(message[20:52]));
 
         // transfer the funds
-        IERC20(token).transfer(msg.sender, amount);
+        // IERC20(token).transfer(msg.sender, amount);
     }
 }
