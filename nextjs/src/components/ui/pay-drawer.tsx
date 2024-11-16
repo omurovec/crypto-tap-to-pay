@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Image from "next/image";
 import {
   Drawer,
   DrawerClose,
@@ -11,12 +12,13 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/Button";
-import { Skeleton } from "@/components/ui/Skeleton";
 import factory from "ggwave";
 import { createClaimSignature } from "@/utils/createSignature";
 import { privateKeyToAccount } from "viem/accounts";
 import { sendTone, receiveTone } from "@/utils/ggwave";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+
+import HoldNearReader from "@/public/hold_reader.gif";
 
 const DECIMALS = 6n;
 
@@ -82,7 +84,9 @@ export default function PayDrawer() {
           <DrawerHeader>
             {sent ? (
               <>
-                <DrawerTitle>Sent</DrawerTitle>
+                <DrawerTitle className="text-2xl font-bold mb-8">
+                  Sent
+                </DrawerTitle>
                 <DrawerDescription className="flex items-center justify-center p-8 pb-2">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -98,16 +102,28 @@ export default function PayDrawer() {
               </>
             ) : (
               <>
-                <DrawerTitle>Sending</DrawerTitle>
-                <DrawerDescription className="flex items-center justify-center p-8 pb-2">
-                  <Skeleton className="h-20 w-20 rounded-full" />
+                <DrawerTitle className="text-2xl font-bold mb-8">
+                  Sending
+                </DrawerTitle>
+                <DrawerDescription className="flex items-center justify-center pb-2">
+                  <div className="relative h-40 w-40 rounded-full overflow-hidden bg-slate-100">
+                    <Image
+                      src={HoldNearReader}
+                      alt="Loading animation"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
                 </DrawerDescription>
               </>
             )}
           </DrawerHeader>
           <DrawerFooter>
             <DrawerClose>
-              <Button variant={sent ? undefined : "ghost"} className="w-full">
+              <Button
+                variant={sent ? undefined : "ghost"}
+                className="w-full h-14 text-lg rounded-2xl"
+              >
                 {sent ? "Done" : "Cancel"}
               </Button>
             </DrawerClose>
