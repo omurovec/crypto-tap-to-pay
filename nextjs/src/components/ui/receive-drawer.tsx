@@ -19,6 +19,7 @@ import HoldNearReader from "@/public/hold_reader.gif";
 import SuccessImg from "@/public/success.gif";
 import { DEFAULT_NETWORK } from "@/config/networks";
 import { useClaimFunds } from "@/hooks/merchant/useClaimFunds";
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 
 const convertTypedArray = (src: any, type: any) => {
   var buffer = new ArrayBuffer(src.byteLength);
@@ -53,6 +54,7 @@ export default function ReceiveDrawer() {
   const { claimFunds } = useClaimFunds({
     network: DEFAULT_NETWORK,
   });
+  const { primaryWallet } = useDynamicContext();
 
   const handleSubmission = async () => {
     setSendAmount(Number(inputValue));
@@ -76,6 +78,7 @@ export default function ReceiveDrawer() {
 
                 // TODO: Send transaction
                 claimFunds(
+                  primaryWallet,
                   signature,
                   BigInt(inputValue) * BigInt(10) ** BigInt(6),
                   address
