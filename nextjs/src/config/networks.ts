@@ -22,3 +22,5 @@ export const COINBASE_API_NETWORK_CONFIG: { [key in NetworkType]: string } = {
   8453: "base-mainnet",
   84532: "base-sepolia",
 };
+
+export const DEFAULT_NETWORK: NetworkType = 84532;
