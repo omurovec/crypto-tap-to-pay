@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import {
   Drawer,
   DrawerClose,
@@ -10,8 +10,10 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { Input } from "@/components/ui/Input";
+import { Input } from "@/components/ui/input";
 import ReceiveDrawer from "@/components/ui/receive-drawer";
+
+import { WalletTest } from "@/components/WalletTest";
 
 export default function Home() {
   return (
@@ -24,6 +26,8 @@ export default function Home() {
 
       {/* History */}
       <div></div>
+
+      <WalletTest />
 
       {/* CTAs */}
       <div className="fixed inset-x-0 bottom-0 flex w-full gap-2 p-2">
