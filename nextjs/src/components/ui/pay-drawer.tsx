@@ -44,7 +44,7 @@ function encodeHexToBase64(hex: any) {
 export default function PayDrawer({
   smartWalletAddress,
 }: {
-  smartWalletAddress: string;
+  smartWalletAddress: string | undefined;
 }) {
   const [sent, setSent] = useState(false);
   const { primaryWallet } = useDynamicContext();
