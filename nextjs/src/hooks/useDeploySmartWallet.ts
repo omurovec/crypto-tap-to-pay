@@ -62,7 +62,7 @@ export function useDeploySmartWallet({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          address: deployData.data.smartWalletAddress,
+          address: owner,
           network,
         }),
       });
