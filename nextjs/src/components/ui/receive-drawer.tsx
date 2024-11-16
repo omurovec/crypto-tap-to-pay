@@ -13,6 +13,13 @@ import {
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Skeleton } from "@/components/ui/Skeleton";
+import factory from "ggwave";
+
+const convertTypedArray = (src, type) => {
+  var buffer = new ArrayBuffer(src.byteLength);
+  var baseView = new src.constructor(buffer).set(src);
+  return new type(buffer);
+};
 
 export default function ReceiveDrawer() {
   const [inputValue, setInputValue] = useState("");
@@ -20,6 +27,92 @@ export default function ReceiveDrawer() {
 
   const handleSubmission = () => {
     setSendAmount(Number(inputValue));
+    factory().then(function (ggwave) {
+      // create ggwave instance with default parameters
+      const context = new AudioContext({ sampleRate: 48000 });
+      var parameters = ggwave.getDefaultParameters();
+      parameters.sampleRateInp = context.sampleRate;
+      parameters.sampleRateOut = context.sampleRate;
+
+      var instance = ggwave.init(parameters);
+
+      var payload = "test";
+
+      // generate audio waveform for string "hello js"
+      var waveform = ggwave.encode(
+        instance,
+        payload,
+        ggwave.ProtocolId.GGWAVE_PROTOCOL_AUDIBLE_FAST,
+        10,
+      );
+
+      // play the audio waveform
+      var buf = convertTypedArray(waveform, Float32Array);
+      var buffer = context.createBuffer(1, buf.length, context.sampleRate);
+      buffer.getChannelData(0).set(buf);
+      var source = context.createBufferSource();
+      source.buffer = buffer;
+      source.connect(context.destination);
+      source.start(0);
+
+      // listen for the audio waveform
+      let constraints = {
+        audio: {
+          // not sure if these are necessary to have
+          echoCancellation: false,
+          autoGainControl: false,
+          noiseSuppression: false,
+        },
+      };
+
+      navigator.mediaDevices
+        .getUserMedia(constraints)
+        .then(function (e) {
+          let mediaStream = context.createMediaStreamSource(e);
+
+          var bufferSize = 1024;
+          var numberOfInputChannels = 1;
+          var numberOfOutputChannels = 1;
+
+          let recorder;
+
+          if (context.createScriptProcessor) {
+            recorder = context.createScriptProcessor(
+              bufferSize,
+              numberOfInputChannels,
+              numberOfOutputChannels,
+            );
+          } else {
+            recorder = context.createJavaScriptNode(
+              bufferSize,
+              numberOfInputChannels,
+              numberOfOutputChannels,
+            );
+          }
+
+          recorder.onaudioprocess = function (e) {
+            var source = e.inputBuffer;
+            var res = ggwave.decode(
+              instance,
+              convertTypedArray(
+                new Float32Array(source.getChannelData(0)),
+                Int8Array,
+              ),
+            );
+
+            if (res && res.length > 0) {
+              res = new TextDecoder("utf-8").decode(res);
+              console.log(res);
+            }
+          };
+
+          mediaStream.connect(recorder);
+          recorder.connect(context.destination);
+        })
+        .catch(function (e) {
+          console.error(e);
+        });
+    });
   };
 
   return (
@@ -64,13 +157,7 @@ export default function ReceiveDrawer() {
                 </DrawerDescription>
               </DrawerHeader>
               <DrawerFooter>
-                <Button
-                  onClick={() => {
-                    setSendAmount(10);
-                  }}
-                >
-                  Receive
-                </Button>
+                <Button onClick={handleSubmission}>Receive</Button>
                 <DrawerClose>
                   <Button
                     onClick={() => {
