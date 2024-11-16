@@ -3,8 +3,6 @@ pragma solidity >=0.8.25 <0.9.0;
 
 import { Test } from "forge-std/src/Test.sol";
 
-import { console } from "forge-std/src/console.sol";
-
 import { Erc20Mock } from "../src/mocks/Erc20Mock.sol";
 import { CustomSmartWallet } from "../src/custom-smart-wallet/CustomSmartWallet.sol";
 
