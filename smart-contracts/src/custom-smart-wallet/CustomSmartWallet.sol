@@ -6,6 +6,8 @@ import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { P256 } from "@openzeppelin/contracts/utils/cryptography/P256.sol";
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
+import { console } from "forge-std/src/console.sol";
+
 error CustomSmartWallet__InvalidPublicKey();
 error CustomSmartWallet__InvalidSignature();
 error CustomSmartWallet__InvalidMessageHash();
@@ -49,7 +51,7 @@ contract CustomSmartWallet is Ownable {
         if (!hashedMessage.verify({ r: r, s: s, qx: px, qy: py })) revert CustomSmartWallet__InvalidSignature();
 
         // verify that the hashedMessage is a valid hash of the message
-        if (keccak256(message) != bytes32(hashedMessage)) revert CustomSmartWallet__InvalidMessageHash();
+        if (keccak256(message) != hashedMessage) revert CustomSmartWallet__InvalidMessageHash();
 
         // extract data from the message
 
