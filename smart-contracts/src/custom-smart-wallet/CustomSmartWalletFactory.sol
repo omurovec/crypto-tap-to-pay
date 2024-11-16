@@ -11,19 +11,19 @@ contract CustomSmartWalletFactory {
     // Mapping from owner address to their deployed smart wallet address
     mapping(address owner => address smartWallet) public smartWallets;
 
-    function createSmartWallet(uint256 initialWithdrawLimit, address token) external returns (address) {
+    function createSmartWallet(address owner, uint256 initialWithdrawLimit, address token) external returns (address) {
         // Check if wallet already exists for this owner
-        if (smartWallets[msg.sender] != address(0)) revert CustomSmartWalletFactory__WalletAlreadyExists();
+        if (smartWallets[owner] != address(0)) revert CustomSmartWalletFactory__WalletAlreadyExists();
 
         // Deploy new CustomSmartWallet
         ///@dev https://docs.soliditylang.org/en/latest/control-structures.html#salted-contract-creations-create2
-        bytes32 salt = bytes32(bytes20(uint160(address(msg.sender))));
-        CustomSmartWallet smartWallet = new CustomSmartWallet{ salt: salt }(msg.sender, initialWithdrawLimit, token);
+        bytes32 salt = bytes32(bytes20(uint160(address(owner))));
+        CustomSmartWallet smartWallet = new CustomSmartWallet{ salt: salt }(owner, initialWithdrawLimit, token);
 
         // Store wallet address in mapping
-        smartWallets[msg.sender] = address(smartWallet);
+        smartWallets[owner] = address(smartWallet);
 
-        emit CustomSmartWalletFactory__SmartWalletCreated(msg.sender, address(smartWallet));
+        emit CustomSmartWalletFactory__SmartWalletCreated(owner, address(smartWallet));
 
         return address(smartWallet);
     }
