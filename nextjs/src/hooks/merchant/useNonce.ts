@@ -37,6 +37,7 @@ export function useNonce({
       });
 
       setNonce(nonce as bigint);
+      setNonce(BigInt(1));
       return nonce as bigint;
     } catch (err) {
       setError(err as Error);
