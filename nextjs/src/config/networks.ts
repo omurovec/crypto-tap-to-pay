@@ -15,7 +15,7 @@ export type NetworkType = keyof typeof NETWORK_CONFIG;
 
 export const DEPLOYMENT_ADDRESSES: { [key in NetworkType]: `0x${string}` } = {
   8453: "0x0000000000000000000000000000000000000000",
-  84532: "0x0000000000000000000000000000000000000000",
+  84532: "0x705F3124762253c8eF6b7a39f6C0AB9a6c2961FF",
 };
 
 export const COINBASE_API_NETWORK_CONFIG: { [key in NetworkType]: string } = {
