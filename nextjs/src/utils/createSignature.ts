@@ -18,7 +18,7 @@ const TYPES = {
 } as const;
 
 interface SignatureParams {
-  privateKey: Hex;
+  primaryWallet: any;
   amount: bigint;
   nonce: bigint;
   chainId?: number;

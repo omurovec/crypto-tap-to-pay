@@ -3,18 +3,20 @@ import { Address, WalletClient, createWalletClient, http } from "viem";
 import { NetworkType, NETWORK_CONFIG } from "@/config/networks";
 import { createClient } from "@/utils/contractUtils";
 import CustomSmartWalletABI from "@/abis/CustomSmartWallet.json";
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { useDynamicContext, Wallet } from "@dynamic-labs/sdk-react-core";
 import { EthereumWallet } from "@dynamic-labs/ethereum-core";
 import { isEthereumWallet } from "@dynamic-labs/ethereum";
 
 interface UseClaimFundsProps {
   network: NetworkType;
+  primaryWallet: any;
 }
 
 interface ClaimFundsResult {
   claimFunds: (
     signature: string,
     amount: bigint,
+    nonce: bigint,
     smartWalletAddress: string
   ) => Promise<void>;
   isLoading: boolean;
@@ -23,15 +25,16 @@ interface ClaimFundsResult {
 
 export function useClaimFunds({
   network,
+  primaryWallet,
 }: UseClaimFundsProps): ClaimFundsResult {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const { primaryWallet } = useDynamicContext();
 
   const claimFunds = async (
     signature: string,
     amount: bigint,
-    smartWalletAddress: Address
+    nonce: bigint,
+    smartWalletAddress: string
   ) => {
     try {
       setIsLoading(true);
@@ -49,15 +52,25 @@ export function useClaimFunds({
         throw new Error("Wallet is not an Ethereum wallet");
       }
 
+      // get nonce
+      // get the wallet address by making a read call
+      const nonce = await client.readContract({
+        address: smartWalletAddress as `0x${string}`,
+        abi: CustomSmartWalletABI,
+        functionName: "nonce",
+      });
+
       // Create wallet client if private key provided
       const ethereumWallet = primaryWallet as EthereumWallet;
       const walletClient = await ethereumWallet.getWalletClient();
 
+      console.log("params", { signature, amount, nonce, smartWalletAddress });
+
       const { request } = await client.simulateContract({
-        address: smartWalletAddress,
+        address: smartWalletAddress as `0x${string}`,
         abi: CustomSmartWalletABI,
         functionName: "claimFunds",
-        args: [signature, amount],
+        args: [signature, { amount, nonce }],
         account: walletClient.account,
       });
 

@@ -4,7 +4,7 @@ import { COINBASE_API_NETWORK_CONFIG, NetworkType } from "@/config/networks";
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const address = searchParams.get("address");
-  const network = searchParams.get("network") as NetworkType;
+  const network = searchParams.get("network") as any as NetworkType;
 
   if (!address || !network) {
     return NextResponse.json(
