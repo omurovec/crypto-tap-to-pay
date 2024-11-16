@@ -26,7 +26,7 @@ dataSources:
       file: ./src/custom-smart-wallet-factory.ts
 templates:
   - name: CustomSmartWallet
-    kind: ethereum/contract
+    kind: ethereum
     network: base-sepolia
     source:
       abi: CustomSmartWallet
@@ -34,14 +34,16 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.7
       language: wasm/assemblyscript
-      file: ./src/custom-smart-wallet.ts
       entities:
-        - CustomSmartWallet
+        - CustomSmartWallet__Transferred
+        - CustomSmartWallet__WithdrawLimitChanged
       abis:
         - name: CustomSmartWallet
           file: ./abis/CustomSmartWallet.json
       eventHandlers:
+        - event: CustomSmartWallet__Transferred(indexed address,indexed address,indexed
+            address,uint256)
+          handler: handleCustomSmartWallet__Transferred
         - event: CustomSmartWallet__WithdrawLimitChanged(uint256,uint256)
-          handler: handleWithdrawLimitChanged
-        - event: CustomSmartWallet__Transferred(indexed address,indexed address,indexed address,uint256)
-          handler: handleTransferred
+          handler: handleCustomSmartWallet__WithdrawLimitChanged
+      file: ./src/custom-smart-wallet.ts
