@@ -8,10 +8,12 @@
 import UIKit
 
 class MerchantViewController : UIViewController {
-    
+    let signer = SignerDevice()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        signer.startListening()
     }
     
     @IBAction
