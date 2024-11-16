@@ -12,6 +12,7 @@
     "@coinbase/coinbase-sdk": "^0.10.0",
     "@dynamic-labs/ethereum": "^3.6.3",
     "@dynamic-labs/sdk-react-core": "^3.6.3",
+    "@dynamic-labs/viem-extension": "^4.0.0-alpha.32",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-slot": "^1.1.0",
     "bootstrap-icons": "^1.11.3",
