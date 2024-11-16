@@ -80,7 +80,7 @@ export default function ReceiveDrawer() {
                   primaryWallet,
                   signature,
                   BigInt(inputValue) * BigInt(10) ** BigInt(6),
-                  address
+                  address,
                 );
                 setReceived(true);
               }

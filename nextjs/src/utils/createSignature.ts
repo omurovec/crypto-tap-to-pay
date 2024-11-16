@@ -34,7 +34,7 @@ export async function createClaimSignature({
 }: SignatureParams) {
   try {
     if (!isEthereumWallet(primaryWallet)) {
-      console.log("errorr");
+      console.log("error");
       return;
     }
 
