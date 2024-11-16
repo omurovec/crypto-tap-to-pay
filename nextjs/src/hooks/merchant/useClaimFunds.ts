@@ -3,6 +3,9 @@ import { Address, WalletClient, createWalletClient, http } from "viem";
 import { NetworkType, NETWORK_CONFIG } from "@/config/networks";
 import { createClient } from "@/utils/contractUtils";
 import CustomSmartWalletABI from "@/abis/CustomSmartWallet.json";
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { EthereumWallet } from "@dynamic-labs/ethereum-core";
+import { isEthereumWallet } from "@dynamic-labs/ethereum";
 
 interface UseClaimFundsProps {
   smartWalletAddress: Address;
@@ -23,6 +26,7 @@ export function useClaimFunds({
 }: UseClaimFundsProps): ClaimFundsResult {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const { primaryWallet } = useDynamicContext();
 
   const claimFunds = async (signature: string, amount: bigint) => {
     try {
@@ -31,15 +35,19 @@ export function useClaimFunds({
 
       const client = createClient(network);
 
+      if (!primaryWallet) {
+        throw new Error(
+          "Wallet not yet initialized. Please try again in a moment."
+        );
+      }
+
+      if (!isEthereumWallet(primaryWallet)) {
+        throw new Error("Wallet is not an Ethereum wallet");
+      }
+
       // Create wallet client if private key provided
-      const walletClient =
-        typeof wallet === "string"
-          ? createWalletClient({
-              account: wallet,
-              chain: client.chain,
-              transport: http(NETWORK_CONFIG[network].rpcUrl),
-            })
-          : wallet;
+      const ethereumWallet = primaryWallet as EthereumWallet;
+      const walletClient = await ethereumWallet.getWalletClient();
 
       const { request } = await client.simulateContract({
         address: smartWalletAddress,
