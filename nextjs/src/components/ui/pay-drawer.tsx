@@ -103,7 +103,7 @@ export default function PayDrawer() {
             ) : (
               <>
                 <DrawerTitle className="text-2xl font-bold mb-8">
-                  Sending
+                  Ready to Pay
                 </DrawerTitle>
                 <DrawerDescription className="flex items-center justify-center pb-2">
                   <div className="relative h-40 w-40 rounded-full overflow-hidden bg-slate-100">

@@ -15,7 +15,8 @@ import { Input } from "@/components/ui/Input";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { receiveTone, sendTone } from "@/utils/ggwave";
 import Image from "next/image";
-import HoldNearReader from "@/public/hold-near-reader.png";
+import HoldNearReader from "@/public/hold_reader.gif";
+import SuccessImg from "@/public/success.gif";
 
 const convertTypedArray = (src, type) => {
   var buffer = new ArrayBuffer(src.byteLength);
@@ -90,8 +91,8 @@ export default function ReceiveDrawer() {
                 <DrawerDescription className="flex items-center justify-center pb-2">
                   <div className="relative h-40 w-40 rounded-full overflow-hidden bg-slate-100">
                     <Image
-                      src={HoldNearReader}
-                      alt="Loading animation"
+                      src={SuccessImg}
+                      alt="Success animation"
                       fill
                       className="object-cover"
                     />
@@ -117,13 +118,21 @@ export default function ReceiveDrawer() {
               <DrawerHeader>
                 <DrawerTitle>Requesting</DrawerTitle>
                 <DrawerDescription className="flex items-center justify-center p-8 pb-2">
-                  <Skeleton className="h-20 w-20 rounded-full" />
+                  <div className="relative h-40 w-40 rounded-full overflow-hidden bg-slate-100">
+                    <Image
+                      src={HoldNearReader}
+                      alt="Loading animation"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
                 </DrawerDescription>
               </DrawerHeader>
               <DrawerFooter>
                 <DrawerClose>
                   <Button
                     variant="ghost"
+                    className="w-full h-14 text-lg rounded-2xl"
                     onClick={() => {
                       setInputValue("");
                       setSendAmount(undefined);
