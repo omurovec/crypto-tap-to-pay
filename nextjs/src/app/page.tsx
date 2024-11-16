@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import {
@@ -13,9 +14,19 @@ import {
 import { Input } from "@/components/ui/Input";
 import ReceiveDrawer from "@/components/ui/receive-drawer";
 import PayDrawer from "@/components/ui/pay-drawer";
+import {
+  useIsLoggedIn,
+  DynamicContextProvider,
+  DynamicWidget,
+  useEmbeddedReveal,
+} from "@dynamic-labs/sdk-react-core";
+import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 
 export default function Home() {
-  return (
+  const isLoggedIn = useIsLoggedIn();
+  const { initExportProcess } = useEmbeddedReveal();
+
+  return isLoggedIn ? (
     <div className="w-full">
       {/* Header */}
       <div>
@@ -35,5 +46,7 @@ export default function Home() {
         <ReceiveDrawer />
       </div>
     </div>
+  ) : (
+    <DynamicWidget />
   );
 }

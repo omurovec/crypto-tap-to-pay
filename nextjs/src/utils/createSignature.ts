@@ -1,6 +1,8 @@
 import { Hex, PrivateKeyAccount, createWalletClient, http } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { mainnet } from "viem/chains";
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import { isEthereumWallet } from "@dynamic-labs/ethereum";
 
 const DOMAIN = {
   name: "CustomSmartWallet",
@@ -23,21 +25,19 @@ interface SignatureParams {
 }
 
 export async function createClaimSignature({
-  privateKey,
+  primaryWallet,
   amount,
   nonce,
   chainId = 1,
 }: SignatureParams) {
   try {
-    // Create account from private key
-    const account: PrivateKeyAccount = privateKeyToAccount(privateKey);
+    if (!isEthereumWallet(primaryWallet)) {
+      console.log("errorr");
+      return;
+    }
 
-    // Create wallet client
-    const client = createWalletClient({
-      account,
-      chain: { ...mainnet, id: chainId },
-      transport: http(),
-    });
+    console.log("Creating signature...");
+    const walletClient = await primaryWallet.getWalletClient();
 
     // Prepare the data to sign
     const message = {
@@ -46,7 +46,7 @@ export async function createClaimSignature({
     };
 
     // Sign the typed data
-    const signature = await client.signTypedData({
+    const signature = await walletClient.signTypedData({
       domain: { ...DOMAIN, chainId },
       types: TYPES,
       primaryType: "Claim",

@@ -10,8 +10,11 @@
   },
   "dependencies": {
     "@coinbase/coinbase-sdk": "^0.10.0",
+    "@dynamic-labs/ethereum": "^3.6.3",
+    "@dynamic-labs/sdk-react-core": "^3.6.3",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-slot": "^1.1.0",
+    "bootstrap-icons": "^1.11.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "ggwave": "^0.4.0",
@@ -21,7 +24,8 @@
     "react-dom": "^18.2.0",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
-    "vaul": "^1.1.1"
+    "vaul": "^1.1.1",
+    "viem": "^2.21.45"
   },
   "devDependencies": {
     "@types/node": "^20",

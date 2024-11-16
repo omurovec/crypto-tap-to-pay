@@ -15,6 +15,8 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import factory from "ggwave";
 import { createClaimSignature } from "@/utils/createSignature";
 import { privateKeyToAccount } from "viem/accounts";
+import { sendTone, receiveTone } from "@/utils/ggwave";
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 
 const DECIMALS = 6n;
 const PRIVATE_KEY =
@@ -44,111 +46,31 @@ function encodeHexToBase64(hex) {
 
 export default function PayDrawer() {
   const [sent, setSent] = useState(false);
+  const { primaryWallet } = useDynamicContext();
 
-  const listenForAudioWaveform = () => {
-    factory().then(function (ggwave) {
-      const context = new AudioContext({ sampleRate: 48000 });
-      var parameters = ggwave.getDefaultParameters();
-      parameters.sampleRateInp = context.sampleRate;
-      parameters.sampleRateOut = context.sampleRate;
+  const initPayment = async () => {
+    await sendTone("o");
 
-      var instance = ggwave.init(parameters);
-
-      // listen for the audio waveform
-      let constraints = {
-        audio: {
-          // not sure if these are necessary to have
-          echoCancellation: false,
-          autoGainControl: false,
-          noiseSuppression: false,
-        },
-      };
-
-      navigator.mediaDevices
-        .getUserMedia(constraints)
-        .then(function (e) {
-          let mediaStream = context.createMediaStreamSource(e);
-
-          var bufferSize = 1024;
-          var numberOfInputChannels = 1;
-          var numberOfOutputChannels = 1;
-
-          let recorder;
-
-          if (context.createScriptProcessor) {
-            recorder = context.createScriptProcessor(
-              bufferSize,
-              numberOfInputChannels,
-              numberOfOutputChannels,
-            );
-          } else {
-            recorder = context.createJavaScriptNode(
-              bufferSize,
-              numberOfInputChannels,
-              numberOfOutputChannels,
-            );
-          }
-
-          recorder.onaudioprocess = function (e) {
-            var source = e.inputBuffer;
-            var res = ggwave.decode(
-              instance,
-              convertTypedArray(
-                new Float32Array(source.getChannelData(0)),
-                Int8Array,
-              ),
-            );
-
-            if (res && res.length > 0) {
-              res = new TextDecoder("utf-8").decode(res);
-              console.log(res);
-              try {
-                let sendAmount = BigInt(res) * 10n ** DECIMALS;
-                console.log(sendAmount);
-                const privateKey = PRIVATE_KEY;
-                createClaimSignature({
-                  privateKey,
-                  amount: sendAmount,
-                  nonce: 0n,
-                }).then((signature) => {
-                  console.log("Sending signature...", signature);
-
-                  const { address } = privateKeyToAccount(privateKey);
-                  var waveform = ggwave.encode(
-                    instance,
-                    encodeHexToBase64(address) +
-                      " " +
-                      encodeHexToBase64(signature),
-                    ggwave.ProtocolId.GGWAVE_PROTOCOL_AUDIBLE_FAST,
-                    10,
-                  );
-
-                  // play the audio waveform
-                  var buf = convertTypedArray(waveform, Float32Array);
-                  var buffer = context.createBuffer(
-                    1,
-                    buf.length,
-                    context.sampleRate,
-                  );
-                  buffer.getChannelData(0).set(buf);
-                  var source = context.createBufferSource();
-                  source.buffer = buffer;
-                  source.connect(context.destination);
-                  source.start(0);
-                  setSent(true);
-                });
-              } catch (e) {
-                console.error(e);
-              }
-            }
-          };
-
-          mediaStream.connect(recorder);
-          recorder.connect(context.destination);
-        })
-        .catch(function (e) {
-          console.error(e);
+    receiveTone(async (response) => {
+      try {
+        let sendAmount = BigInt(response) * 10n ** DECIMALS;
+        console.log(sendAmount);
+        const signature = await createClaimSignature({
+          primaryWallet,
+          amount: sendAmount,
+          nonce: 0n, // TODO: Replace with proper nonce
         });
+
+        console.log("Sending signature...", signature);
+        const address = primaryWallet.address;
+
+        await sendTone(
+          encodeHexToBase64(address) + " " + encodeHexToBase64(signature),
+        );
+        setTimeout(() => setSent(true), 10000);
+      } catch (e) {
+        console.warn(e);
+      }
     });
   };
 
@@ -157,7 +79,7 @@ export default function PayDrawer() {
       <Drawer>
         {/* Pay modal */}
         <DrawerTrigger className="w-full">
-          <Button onClick={listenForAudioWaveform} className="w-full">
+          <Button onClick={initPayment} className="w-full">
             Pay
           </Button>
         </DrawerTrigger>
@@ -165,14 +87,23 @@ export default function PayDrawer() {
           <DrawerHeader>
             {sent ? (
               <>
-                <DrawerTitle>Sent!</DrawerTitle>
+                <DrawerTitle>Sent</DrawerTitle>
                 <DrawerDescription className="flex items-center justify-center p-8 pb-2">
-                  <Skeleton className="h-20 w-20 rounded-full" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="56"
+                    height="56"
+                    fill="lightgreen"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                    <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05" />
+                  </svg>
                 </DrawerDescription>
               </>
             ) : (
               <>
-                <DrawerTitle>Listening</DrawerTitle>
+                <DrawerTitle>Sending</DrawerTitle>
                 <DrawerDescription className="flex items-center justify-center p-8 pb-2">
                   <Skeleton className="h-20 w-20 rounded-full" />
                 </DrawerDescription>
@@ -181,7 +112,9 @@ export default function PayDrawer() {
           </DrawerHeader>
           <DrawerFooter>
             <DrawerClose>
-              <Button variant="ghost">{sent ? "Done" : "Cancel"}</Button>
+              <Button variant={sent ? undefined : "ghost"} className="w-full">
+                {sent ? "Done" : "Cancel"}
+              </Button>
             </DrawerClose>
           </DrawerFooter>
         </DrawerContent>

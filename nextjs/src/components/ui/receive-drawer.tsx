@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Skeleton } from "@/components/ui/Skeleton";
-import factory from "ggwave";
+import { receiveTone, sendTone } from "@/utils/ggwave";
 
 const convertTypedArray = (src, type) => {
   var buffer = new ArrayBuffer(src.byteLength);
@@ -44,95 +44,31 @@ function bytesToHex(bytes) {
 export default function ReceiveDrawer() {
   const [inputValue, setInputValue] = useState("");
   const [sendAmount, setSendAmount] = useState<number>();
+  const [received, setReceived] = useState(false);
 
-  const handleSubmission = () => {
+  const handleSubmission = async () => {
     setSendAmount(Number(inputValue));
-    factory().then(function (ggwave) {
-      // create ggwave instance with default parameters
-      const context = new AudioContext({ sampleRate: 48000 });
-      var parameters = ggwave.getDefaultParameters();
-      parameters.sampleRateInp = context.sampleRate;
-      parameters.sampleRateOut = context.sampleRate;
 
-      var instance = ggwave.init(parameters);
-
-      var payload = inputValue;
-
-      // generate audio waveform for string "hello js"
-      var waveform = ggwave.encode(
-        instance,
-        payload,
-        ggwave.ProtocolId.GGWAVE_PROTOCOL_AUDIBLE_FAST,
-        10,
-      );
-
-      // play the audio waveform
-      var buf = convertTypedArray(waveform, Float32Array);
-      var buffer = context.createBuffer(1, buf.length, context.sampleRate);
-      buffer.getChannelData(0).set(buf);
-      var source = context.createBufferSource();
-      source.buffer = buffer;
-      source.connect(context.destination);
-      source.start(0);
-
-      // listen for the audio waveform
-      let constraints = {
-        audio: {
-          // not sure if these are necessary to have
-          echoCancellation: false,
-          autoGainControl: false,
-          noiseSuppression: false,
-        },
-      };
-
-      navigator.mediaDevices
-        .getUserMedia(constraints)
-        .then(function (e) {
-          let mediaStream = context.createMediaStreamSource(e);
-
-          var bufferSize = 1024;
-          var numberOfInputChannels = 1;
-          var numberOfOutputChannels = 1;
-
-          let recorder;
-
-          if (context.createScriptProcessor) {
-            recorder = context.createScriptProcessor(
-              bufferSize,
-              numberOfInputChannels,
-              numberOfOutputChannels,
-            );
-          } else {
-            recorder = context.createJavaScriptNode(
-              bufferSize,
-              numberOfInputChannels,
-              numberOfOutputChannels,
-            );
-          }
-
-          recorder.onaudioprocess = function (e) {
-            var source = e.inputBuffer;
-            var res = ggwave.decode(
-              instance,
-              convertTypedArray(
-                new Float32Array(source.getChannelData(0)),
-                Int8Array,
-              ),
-            );
-
-            if (res && res.length > 0) {
-              res = new TextDecoder("utf-8").decode(res);
+    // wait for payer
+    receiveTone((openTone) => {
+      if (openTone == "o") {
+        // send the amount
+        sendTone(inputValue).then(() => {
+          // wait for signature
+          receiveTone((res) => {
+            try {
               let [address, signature] = res.split(" ").map(decodeBase64ToHex);
               console.log(address, signature);
+              if (address && signature) {
+                // TODO: Send transaction
+                setReceived(true);
+              }
+            } catch (e) {
+              console.error(e);
             }
-          };
-
-          mediaStream.connect(recorder);
-          recorder.connect(context.destination);
-        })
-        .catch(function (e) {
-          console.error(e);
+          });
         });
+      }
     });
   };
 
@@ -143,7 +79,38 @@ export default function ReceiveDrawer() {
           <Button className="w-full">Receive</Button>
         </DrawerTrigger>
         <DrawerContent>
-          {sendAmount !== undefined ? (
+          {received ? (
+            <>
+              <DrawerHeader>
+                <DrawerTitle>Received</DrawerTitle>
+                <DrawerDescription className="flex items-center justify-center p-8 pb-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="56"
+                    height="56"
+                    fill="lightgreen"
+                    viewBox="0 0 16 16"
+                  >
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                    <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05" />
+                  </svg>
+                </DrawerDescription>
+              </DrawerHeader>
+              <DrawerFooter>
+                <DrawerClose>
+                  <Button
+                    className="w-full"
+                    onClick={() => {
+                      setInputValue("");
+                      setSendAmount(undefined);
+                    }}
+                  >
+                    Done
+                  </Button>
+                </DrawerClose>
+              </DrawerFooter>
+            </>
+          ) : sendAmount !== undefined ? (
             <>
               <DrawerHeader>
                 <DrawerTitle>Requesting</DrawerTitle>
