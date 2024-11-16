@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Address, WalletClient, createWalletClient, http } from "viem";
-import { NetworkType } from "@/config/networks";
+import { NetworkType, NETWORK_CONFIG } from "@/config/networks";
 import { createClient } from "@/utils/contractUtils";
 import CustomSmartWalletABI from "@/abis/CustomSmartWallet.json";
 
@@ -37,7 +37,7 @@ export function useClaimFunds({
           ? createWalletClient({
               account: wallet,
               chain: client.chain,
-              transport: http(),
+              transport: http(NETWORK_CONFIG[network].rpcUrl),
             })
           : wallet;
 

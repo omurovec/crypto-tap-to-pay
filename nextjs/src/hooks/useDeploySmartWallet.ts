@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { WalletClient, createWalletClient, http } from "viem";
-import { NetworkType, DEPLOYMENT_ADDRESSES } from "@/config/networks";
+import {
+  NetworkType,
+  DEPLOYMENT_ADDRESSES,
+  NETWORK_CONFIG,
+} from "@/config/networks";
 import { createClient } from "@/utils/contractUtils";
 import CustomSmartWalletFactoryABI from "@/abis/CustomSmartWalletFactory.json";
 
@@ -43,7 +47,7 @@ export function useDeploySmartWallet({
           ? createWalletClient({
               account: wallet,
               chain: client.chain,
-              transport: http(),
+              transport: http(NETWORK_CONFIG[network].rpcUrl),
             })
           : wallet;
 
