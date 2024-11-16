@@ -26,7 +26,7 @@ import { formatUsdc } from "@/utils/formatUsdc";
 import { AnimatedNumber } from "@/components/ui/home/animated-number";
 import { useWalletAddress } from "@/hooks/dynamic/useWalletAddress";
 import { useWalletBalance } from "@/hooks/useWalletBalance";
-import { DEFAULT_NETWORK } from "@/config/networks";
+import { DEFAULT_NETWORK, TOKEN_ADDRESSES } from "@/config/networks";
 import { useSmartWalletAddress } from "@/hooks/useSmartWalletAddress";
 import { useDeploySmartWallet } from "@/hooks/useDeploySmartWallet";
 import logo from "@/assets/logo.jpg";
@@ -72,15 +72,15 @@ export default function Home() {
     navigator.clipboard.writeText(smartWalletAddress || "");
   };
 
-  // useEffect(() => {
-  //   if (!smartWalletExists) {
-  //     deploySmartWallet(
-  //       eoaAddress as `0x${string}`,
-  //       BigInt(100000000),
-  //       "0x705f3124762253c8ef6b7a39f6c0ab9a6c2961ff"
-  //     );
-  //   }
-  // }, [smartWalletExists]);
+  useEffect(() => {
+    if (!smartWalletExists) {
+      deploySmartWallet(
+        eoaAddress as `0x${string}`,
+        BigInt(100000000),
+        TOKEN_ADDRESSES[DEFAULT_NETWORK]
+      );
+    }
+  }, [smartWalletExists]);
 
   if (!isLoggedIn) {
     return (
