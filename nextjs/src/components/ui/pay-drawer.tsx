@@ -64,6 +64,7 @@ export default function PayDrawer({ smartWalletAddress }) {
         });
         const signature = await createClaimSignature({
           primaryWallet,
+          smartWalletAddress,
           amount: sendAmount,
           nonce,
         });

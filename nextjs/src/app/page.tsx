@@ -77,7 +77,7 @@ export default function Home() {
       deploySmartWallet(
         eoaAddress as `0x${string}`,
         BigInt(100000000),
-        TOKEN_ADDRESSES[DEFAULT_NETWORK]
+        TOKEN_ADDRESSES[DEFAULT_NETWORK],
       );
     }
   }, [smartWalletExists]);
