@@ -3,7 +3,7 @@ import { Address } from "viem";
 import { NetworkType } from "@/config/networks";
 
 interface UseSmartWalletBalanceProps {
-  smartWalletAddress: Address;
+  walletAddress: Address;
   network: NetworkType;
 }
 
@@ -13,8 +13,8 @@ interface BalanceResult {
   error: Error | null;
 }
 
-export function useSmartWalletBalance({
-  smartWalletAddress,
+export function useWalletBalance({
+  walletAddress,
   network,
 }: UseSmartWalletBalanceProps): BalanceResult {
   const [balance, setBalance] = useState<string>("0");
@@ -27,7 +27,7 @@ export function useSmartWalletBalance({
         setIsLoading(true);
 
         const response = await fetch(
-          `/api/usdc-balance?address=${smartWalletAddress}&network=${network}`
+          `/api/usdc-balance?address=${walletAddress}&network=${network}`
         );
         const data = await response.json();
 
@@ -47,10 +47,10 @@ export function useSmartWalletBalance({
       }
     };
 
-    if (smartWalletAddress) {
+    if (walletAddress) {
       fetchBalance();
     }
-  }, [smartWalletAddress, network]);
+  }, [walletAddress, network]);
 
   return { balance, isLoading, error };
 }
