@@ -43,12 +43,14 @@ export async function POST(request: Request) {
     });
 
     // Get precomputed wallet address first
-    const preComputedWalletAddress = await client.readContract({
+    const [preComputedWalletAddress, isDeployed] = (await client.readContract({
       address: DEPLOYMENT_ADDRESSES[typedNetwork] as `0x${string}`,
       abi: CustomSmartWalletFactoryABI,
       functionName: "getWalletAddress",
       args: [owner, BigInt(initialWithdrawLimit), token],
-    });
+    })) as [`0x${string}`, boolean];
+
+    console.log("preComputedWalletAddress", preComputedWalletAddress);
 
     // Simulate the contract call
     const { request: contractRequest } = await client.simulateContract({
@@ -61,6 +63,8 @@ export async function POST(request: Request) {
 
     // Execute the transaction
     const hash = await walletClient.writeContract(contractRequest);
+
+    console.log("hash", hash);
 
     // Wait for transaction receipt
     await client.waitForTransactionReceipt({ hash });
