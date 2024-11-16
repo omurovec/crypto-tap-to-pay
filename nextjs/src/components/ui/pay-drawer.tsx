@@ -38,7 +38,7 @@ function encodeHexToBase64(hex) {
   return btoa(String.fromCharCode(...bytes));
 }
 
-export default function PayDrawer() {
+export default function PayDrawer({ smartWalletAddress }) {
   const [sent, setSent] = useState(false);
   const { primaryWallet } = useDynamicContext();
 
@@ -56,10 +56,10 @@ export default function PayDrawer() {
         });
 
         console.log("Sending signature...", signature);
-        const address = primaryWallet.address;
 
+        const address = smartWalletAddress;
         await sendTone(
-          encodeHexToBase64(address) + " " + encodeHexToBase64(signature)
+          encodeHexToBase64(address) + " " + encodeHexToBase64(signature),
         );
         setTimeout(() => setSent(true), 10000);
       } catch (e) {

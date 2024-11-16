@@ -140,7 +140,7 @@ export default function Home() {
       {/* CTAs */}
       <div className="flex w-full gap-2 p-2 mt-12">
         {/* Pay modal */}
-        <PayDrawer />
+        <PayDrawer smartWalletAddress={smartWalletAddress} />
 
         {/* Receive modal */}
         <ReceiveDrawer />
