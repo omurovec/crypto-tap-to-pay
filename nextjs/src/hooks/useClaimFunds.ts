@@ -7,7 +7,7 @@ import CustomSmartWalletABI from "@/abis/CustomSmartWallet.json";
 
 interface UseClaimFundsProps {
   walletAddress: Address;
-  network?: NetworkType;
+  network: NetworkType;
   wallet: WalletClient | `0x${string}`; // Can accept wallet client or private key
 }
 
@@ -18,7 +18,7 @@ interface ClaimFundsResult {
 }
 
 export function useClaimFunds({
-  network = "base",
+  network,
   wallet,
 }: UseClaimFundsProps): ClaimFundsResult {
   const [isLoading, setIsLoading] = useState(false);

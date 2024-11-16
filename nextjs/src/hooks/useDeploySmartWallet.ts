@@ -5,7 +5,7 @@ import { createClient } from "@/utils/contractUtils";
 import CustomSmartWalletFactoryABI from "@/abis/CustomSmartWalletFactory.json";
 
 interface UseDeploySmartWalletProps {
-  network?: NetworkType;
+  network: NetworkType;
   wallet: WalletClient | `0x${string}`; // Can accept wallet client or private key
 }
 
@@ -20,7 +20,7 @@ interface DeploySmartWalletResult {
 }
 
 export function useDeploySmartWallet({
-  network = "base",
+  network,
   wallet,
 }: UseDeploySmartWalletProps): DeploySmartWalletResult {
   const [isLoading, setIsLoading] = useState(false);
@@ -46,6 +46,16 @@ export function useDeploySmartWallet({
               transport: http(),
             })
           : wallet;
+
+      // get precomputed wallet address
+      const preComputedWalletAddress = await client.readContract({
+        address: DEPLOYMENT_ADDRESSES[network] as `0x${string}`,
+        abi: CustomSmartWalletFactoryABI,
+        functionName: "getWalletAddress",
+        args: [owner, initialWithdrawLimit, token],
+      });
+
+      // TODO: add funding of wallet with small native token balance
 
       const { request } = await client.simulateContract({
         address: DEPLOYMENT_ADDRESSES[network] as `0x${string}`,

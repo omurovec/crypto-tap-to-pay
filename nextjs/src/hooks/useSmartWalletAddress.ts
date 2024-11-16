@@ -5,7 +5,7 @@ import { createClient } from "@/utils/contractUtils";
 import CustomSmartWalletFactoryABI from "@/abis/CustomSmartWalletFactory.json";
 
 interface UseSmartWalletAddressProps {
-  network?: NetworkType;
+  network: NetworkType;
   eoaAddress: `0x${string}`;
 }
 
@@ -16,7 +16,7 @@ interface SmartWalletAddressResult {
 }
 
 export function useSmartWalletAddress({
-  network = "base",
+  network,
   eoaAddress,
 }: UseSmartWalletAddressProps): SmartWalletAddressResult {
   const [smartWalletAddress, setSmartWalletAddress] = useState<
