@@ -12,13 +12,7 @@ interface UseClaimFundsProps {
 }
 
 interface ClaimFundsResult {
-  claimFunds: (
-    hashedMessage: `0x${string}`,
-    r: `0x${string}`,
-    s: `0x${string}`,
-    token: `0x${string}`,
-    amount: `0x${string}`
-  ) => Promise<void>;
+  claimFunds: (signature: string, amount: bigint) => Promise<void>;
   isLoading: boolean;
   error: Error | null;
 }
@@ -30,13 +24,7 @@ export function useClaimFunds({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const claimFunds = async (
-    hashedMessage: `0x${string}`,
-    r: `0x${string}`,
-    s: `0x${string}`,
-    token: `0x${string}`,
-    amount: `0x${string}`
-  ) => {
+  const claimFunds = async (signature: string, amount: bigint) => {
     try {
       setIsLoading(true);
       setError(null);
@@ -57,7 +45,7 @@ export function useClaimFunds({
         address: DEPLOYMENT_ADDRESSES[network] as `0x${string}`,
         abi: CustomSmartWalletABI,
         functionName: "claimFunds",
-        args: [hashedMessage, r, s, token, amount],
+        args: [signature, amount],
         account: walletClient.account,
       });
 

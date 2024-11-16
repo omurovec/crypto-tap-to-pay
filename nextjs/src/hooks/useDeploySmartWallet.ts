@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Address, WalletClient, createWalletClient, http } from "viem";
+import { WalletClient, createWalletClient, http } from "viem";
 import { NetworkType, DEPLOYMENT_ADDRESSES } from "@/config/networks";
 import { createClient } from "@/utils/contractUtils";
 import CustomSmartWalletFactoryABI from "@/abis/CustomSmartWalletFactory.json";
@@ -11,10 +11,10 @@ interface UseDeploySmartWalletProps {
 
 interface DeploySmartWalletResult {
   deploySmartWallet: (
-    px: `0x${string}`,
-    py: `0x${string}`,
-    initialWithdrawLimit: bigint
-  ) => Promise<Address>;
+    owner: `0x${string}`,
+    initialWithdrawLimit: bigint,
+    token: `0x${string}`
+  ) => Promise<void>;
   isLoading: boolean;
   error: Error | null;
 }
@@ -27,10 +27,10 @@ export function useDeploySmartWallet({
   const [error, setError] = useState<Error | null>(null);
 
   const deploySmartWallet = async (
-    px: `0x${string}`,
-    py: `0x${string}`,
-    initialWithdrawLimit: bigint
-  ): Promise<Address> => {
+    owner: `0x${string}`,
+    initialWithdrawLimit: bigint,
+    token: `0x${string}`
+  ) => {
     try {
       setIsLoading(true);
       setError(null);
@@ -51,7 +51,7 @@ export function useDeploySmartWallet({
         address: DEPLOYMENT_ADDRESSES[network] as `0x${string}`,
         abi: CustomSmartWalletFactoryABI,
         functionName: "createSmartWallet",
-        args: [px, py, initialWithdrawLimit],
+        args: [owner, initialWithdrawLimit, token],
         account: walletClient.account,
       });
 
@@ -60,16 +60,6 @@ export function useDeploySmartWallet({
 
       // Wait for transaction receipt
       await client.waitForTransactionReceipt({ hash });
-
-      // get the wallet address by making a read call
-      const walletAddress = await client.readContract({
-        address: DEPLOYMENT_ADDRESSES[network] as `0x${string}`,
-        abi: CustomSmartWalletFactoryABI,
-        functionName: "smartWallets",
-        args: [walletClient.account?.address as Address],
-      });
-
-      return walletAddress as Address;
     } catch (err) {
       const error =
         err instanceof Error ? err : new Error("Failed to deploy smart wallet");
