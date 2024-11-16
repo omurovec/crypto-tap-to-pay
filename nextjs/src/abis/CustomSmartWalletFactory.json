@@ -3,13 +3,13 @@
     "type": "function",
     "name": "createSmartWallet",
     "inputs": [
-      { "name": "px", "type": "bytes32", "internalType": "bytes32" },
-      { "name": "py", "type": "bytes32", "internalType": "bytes32" },
+      { "name": "owner", "type": "address", "internalType": "address" },
       {
         "name": "initialWithdrawLimit",
         "type": "uint256",
         "internalType": "uint256"
-      }
+      },
+      { "name": "token", "type": "address", "internalType": "address" }
     ],
     "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
     "stateMutability": "nonpayable"
@@ -19,13 +19,12 @@
     "name": "getWalletAddress",
     "inputs": [
       { "name": "owner", "type": "address", "internalType": "address" },
-      { "name": "px", "type": "bytes32", "internalType": "bytes32" },
-      { "name": "py", "type": "bytes32", "internalType": "bytes32" },
       {
         "name": "initialWithdrawLimit",
         "type": "uint256",
         "internalType": "uint256"
-      }
+      },
+      { "name": "token", "type": "address", "internalType": "address" }
     ],
     "outputs": [
       { "name": "smartWallet", "type": "address", "internalType": "address" },
@@ -38,13 +37,12 @@
     "name": "precomputeWalletAddress",
     "inputs": [
       { "name": "ownerAddress", "type": "address", "internalType": "address" },
-      { "name": "px", "type": "bytes32", "internalType": "bytes32" },
-      { "name": "py", "type": "bytes32", "internalType": "bytes32" },
       {
         "name": "initialWithdrawLimit",
         "type": "uint256",
         "internalType": "uint256"
-      }
+      },
+      { "name": "token", "type": "address", "internalType": "address" }
     ],
     "outputs": [{ "name": "", "type": "address", "internalType": "address" }],
     "stateMutability": "view"
