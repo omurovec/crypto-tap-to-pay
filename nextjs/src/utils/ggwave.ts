@@ -1,6 +1,6 @@
 import factory from "ggwave";
 
-const convertTypedArray = (src, type) => {
+const convertTypedArray = (src: any, type: any) => {
   var buffer = new ArrayBuffer(src.byteLength);
   var baseView = new src.constructor(buffer).set(src);
   return new type(buffer);
@@ -43,9 +43,9 @@ export const sendTone = async (message: string) => {
   source.start(0);
 };
 
-export const receiveTone = (callback: (string) => any): string => {
+export const receiveTone = (callback: (arg0: string) => any) => {
   factory()
-    .then(function (ggwave) {
+    .then(function (ggwave: any) {
       const context = new AudioContext({ sampleRate: 48000 });
       let parameters = ggwave.getDefaultParameters();
       parameters.sampleRateInp = context.sampleRate;
@@ -74,21 +74,13 @@ export const receiveTone = (callback: (string) => any): string => {
 
           let recorder;
 
-          if (context.createScriptProcessor) {
-            recorder = context.createScriptProcessor(
-              bufferSize,
-              numberOfInputChannels,
-              numberOfOutputChannels,
-            );
-          } else {
-            recorder = context.createJavaScriptNode(
-              bufferSize,
-              numberOfInputChannels,
-              numberOfOutputChannels,
-            );
-          }
+          recorder = context.createScriptProcessor(
+            bufferSize,
+            numberOfInputChannels,
+            numberOfOutputChannels,
+          );
 
-          recorder.onaudioprocess = function (e) {
+          recorder.onaudioprocess = function (e: any) {
             var source = e.inputBuffer;
             var res = ggwave.decode(
               instance,
@@ -107,11 +99,11 @@ export const receiveTone = (callback: (string) => any): string => {
           mediaStream.connect(recorder);
           recorder.connect(context.destination);
         })
-        .catch(function (e) {
+        .catch(function (e: any) {
           console.warn(e);
         });
     })
-    .catch(function (e) {
+    .catch(function (e: any) {
       console.warn(e);
     });
 };
