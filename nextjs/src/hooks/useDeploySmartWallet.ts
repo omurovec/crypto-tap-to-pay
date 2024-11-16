@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { WalletClient } from "viem";
 import { NetworkType } from "@/config/networks";
 
 interface UseDeploySmartWalletProps {
   network: NetworkType;
-  wallet: WalletClient | `0x${string}`;
 }
 
 interface DeploySmartWalletResult {
