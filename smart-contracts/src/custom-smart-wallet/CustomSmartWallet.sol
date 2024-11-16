@@ -11,6 +11,10 @@ error CustomSmartWallet__SignatureAlreadyUsed();
 error CustomSmartWallet__InvalidSignature();
 error CustomSmartWallet__WithdrawLimitExceeded();
 
+event CustomSmartWallet__WithdrawLimitChanged(uint256 oldLimit, uint256 newLimit);
+
+event CustomSmartWallet__Transferred(address indexed from, address indexed to, address indexed token, uint256 amount);
+
 contract CustomSmartWallet is Ownable, EIP712 {
     using ECDSA for bytes32;
 
@@ -49,7 +53,9 @@ contract CustomSmartWallet is Ownable, EIP712 {
     }
 
     function setWithdrawLimit(uint256 newLimit) external onlyOwner {
+        uint256 oldLimit = withdrawLimit;
         withdrawLimit = newLimit;
+        emit CustomSmartWallet__WithdrawLimitChanged(oldLimit, newLimit);
     }
 
     function claimFunds(bytes calldata signature, Claim calldata claim) external {
@@ -67,6 +73,7 @@ contract CustomSmartWallet is Ownable, EIP712 {
 
         // transfer the funds
         IERC20(token).transfer(msg.sender, claim.amount);
+        emit CustomSmartWallet__Transferred(address(this), msg.sender, token, claim.amount);
     }
 
     function verifyClaim(bytes calldata signature, Claim calldata claim, address signer) public view returns (bool) {
