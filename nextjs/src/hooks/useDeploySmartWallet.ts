@@ -1,16 +1,10 @@
 import { useState } from "react";
-import { WalletClient, createWalletClient, http } from "viem";
-import {
-  NetworkType,
-  DEPLOYMENT_ADDRESSES,
-  NETWORK_CONFIG,
-} from "@/config/networks";
-import { createClient } from "@/utils/contractUtils";
-import CustomSmartWalletFactoryABI from "@/abis/CustomSmartWalletFactory.json";
+import { WalletClient } from "viem";
+import { NetworkType } from "@/config/networks";
 
 interface UseDeploySmartWalletProps {
   network: NetworkType;
-  wallet: WalletClient | `0x${string}`; // Can accept wallet client or private key
+  wallet: WalletClient | `0x${string}`;
 }
 
 interface DeploySmartWalletResult {
@@ -25,7 +19,6 @@ interface DeploySmartWalletResult {
 
 export function useDeploySmartWallet({
   network,
-  wallet,
 }: UseDeploySmartWalletProps): DeploySmartWalletResult {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -39,66 +32,48 @@ export function useDeploySmartWallet({
       setIsLoading(true);
       setError(null);
 
-      const client = createClient(network);
-
-      // Create wallet client if private key provided
-      const walletClient =
-        typeof wallet === "string"
-          ? createWalletClient({
-              account: wallet,
-              chain: client.chain,
-              transport: http(NETWORK_CONFIG[network].rpcUrl),
-            })
-          : wallet;
-
-      // get precomputed wallet address
-      const preComputedWalletAddress = await client.readContract({
-        address: DEPLOYMENT_ADDRESSES[network] as `0x${string}`,
-        abi: CustomSmartWalletFactoryABI,
-        functionName: "getWalletAddress",
-        args: [owner, initialWithdrawLimit, token],
+      // Deploy the smart wallet
+      const deployResponse = await fetch("/api/deploySmartWallet", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          owner,
+          initialWithdrawLimit: initialWithdrawLimit.toString(),
+          token,
+          network,
+        }),
       });
 
-      // TODO: add funding of wallet with small native token balance
-      // make call to api/fund-smart-wallet
-      try {
-        const response = await fetch(`/api/fund-smart-wallet`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            address: preComputedWalletAddress,
-            network: network,
-          }),
-        });
-
-        if (!response.ok) {
-          const error = new Error("Failed to fund smart wallet");
-          setError(error);
-          throw error;
-        }
-
-        // check if response is okey
-      } catch (err) {
-        setError(
-          err instanceof Error ? err : new Error("Failed to fund smart wallet")
-        );
+      if (!deployResponse.ok) {
+        const data = await deployResponse.json();
+        throw new Error(data.error || "Failed to deploy smart wallet");
       }
 
-      const { request } = await client.simulateContract({
-        address: DEPLOYMENT_ADDRESSES[network] as `0x${string}`,
-        abi: CustomSmartWalletFactoryABI,
-        functionName: "createSmartWallet",
-        args: [owner, initialWithdrawLimit, token],
-        account: walletClient.account,
+      const deployData = await deployResponse.json();
+
+      if (!deployData.success || !deployData.data.smartWalletAddress) {
+        throw new Error("Failed to deploy smart wallet");
+      }
+
+      // Fund the deployed wallet
+      const fundResponse = await fetch("/api/fundSmartWallet", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          address: deployData.data.smartWalletAddress,
+          network,
+        }),
       });
 
-      // Execute the transaction
-      const hash = await walletClient.writeContract(request);
+      if (!fundResponse.ok) {
+        throw new Error("Failed to fund smart wallet");
+      }
 
-      // Wait for transaction receipt
-      await client.waitForTransactionReceipt({ hash });
+      return deployData.data.smartWalletAddress;
     } catch (err) {
       const error =
         err instanceof Error ? err : new Error("Failed to deploy smart wallet");
