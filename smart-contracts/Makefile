@@ -1,20 +1,20 @@
 deploy_dry:
-	forge script script/DeployFactory.s.sol -vvvv --rpc-url flow --verify --verifier=blockscout
-	forge script script/DeployFactory.s.sol -vvvv --rpc-url mantle --verify --verifier=blockscout
-	forge script script/DeployFactory.s.sol -vvvv --rpc-url scroll --verify
-	forge script script/DeployFactory.s.sol -vvvv --rpc-url base --verify
-	forge script script/DeployFactory.s.sol -vvvv --rpc-url polygon --verify
-	forge script script/DeployFactory.s.sol -vvvv --rpc-url zircuit --verify
-	forge script script/DeployFactory.s.sol -vvvv --rpc-url morph --verify --verifier=blockscout
+	forge script script/DeployFactory.s.sol -vvvv --rpc-url flow --verifier=blockscout
+	forge script script/DeployFactory.s.sol -vvvv --rpc-url mantle --verifier=blockscout
+	forge script script/DeployFactory.s.sol -vvvv --rpc-url scroll
+	forge script script/DeployFactory.s.sol -vvvv --rpc-url base
+	forge script script/DeployFactory.s.sol -vvvv --rpc-url polygon
+	forge script script/DeployFactory.s.sol -vvvv --rpc-url zircuit
+	forge script script/DeployFactory.s.sol -vvvv --rpc-url morph --verifier=blockscout
 
 deploy_test_dry:
-	forge script script/DeployFactory.s.sol -vvvv --rpc-url flow_test --verify --verifier=blockscout
-	forge script script/DeployFactory.s.sol -vvvv --rpc-url mantle_sepolia --verify --verifier=blockscout
-	forge script script/DeployFactory.s.sol -vvvv --rpc-url scroll_sepolia --verify
-	forge script script/DeployFactory.s.sol -vvvv --rpc-url base_sepolia --verify
-	forge script script/DeployFactory.s.sol -vvvv --rpc-url polygon_amoy --verify
-	forge script script/DeployFactory.s.sol -vvvv --rpc-url zircuit_test --verify
-	forge script script/DeployFactory.s.sol -vvvv --rpc-url morph_test --verify --verifier=blockscout
+	forge script script/DeployFactory.s.sol -vvvv --rpc-url flow_test --verifier=blockscout
+	forge script script/DeployFactory.s.sol -vvvv --rpc-url mantle_sepolia --verifier=blockscout
+	forge script script/DeployFactory.s.sol -vvvv --rpc-url scroll_sepolia
+	forge script script/DeployFactory.s.sol -vvvv --rpc-url base_sepolia
+	forge script script/DeployFactory.s.sol -vvvv --rpc-url polygon_amoy
+	forge script script/DeployFactory.s.sol -vvvv --rpc-url zircuit_test
+	forge script script/DeployFactory.s.sol -vvvv --rpc-url morph_test --verifier=blockscout
 
 deploy:
 	forge script script/DeployFactory.s.sol -vvvv --rpc-url flow --verify --broadcast --verifier=blockscout
