@@ -20,16 +20,21 @@
   verbosity = 4
 
 [etherscan]
-  arbitrum = { key = "${API_KEY_ARBISCAN}" }
-  avalanche = { key = "${API_KEY_SNOWTRACE}" }
-  base = { key = "${API_KEY_BASESCAN}" }
-  bnb_smart_chain = { key = "${API_KEY_BSCSCAN}" }
-  gnosis_chain = { key = "${API_KEY_GNOSISSCAN}" }
-  goerli = { key = "${API_KEY_ETHERSCAN}" }
-  mainnet = { key = "${API_KEY_ETHERSCAN}" }
-  optimism = { key = "${API_KEY_OPTIMISTIC_ETHERSCAN}" }
-  polygon = { key = "${API_KEY_POLYGONSCAN}" }
-  sepolia = { key = "${API_KEY_ETHERSCAN}" }
+  # blockscout type scanners do not need a key
+  flow = { key = "", url = "${FLOW_SCAN_URL}", chain = 747 }
+  flow_test = { key = "", url = "${FLOW_TEST_SCAN_URL}", chain = 545 }
+  mantle = { key = "", url = "${MANTLE_SCAN_URL}", chain = 5000 }
+  mantle_sepolia = { key = "", url = "${MANTLE_SEPOLIA_SCAN_URL}", chain = 5003 }
+  scroll = { key = "${SCROLL_SCAN_KEY}", chain = 534352 }
+  scroll_sepolia = { key = "${SCROLL_SCAN_KEY}", chain = 534351 }
+  base = { key = "${BASE_SCAN_KEY}", chain = 8453 }
+  base_sepolia = { key = "${BASE_SCAN_KEY}", chain = 84532 }
+  polygon = { key = "${POLYGON_SCAN_KEY}", chain = 137 }
+  polygon_amoy = { key = "${POLYGON_SCAN_KEY}", chain = 80002 }
+  zircuit = { key = "${ZIRCUIT_SCAN_KEY}", chain = 48900, url = "${ZIRCUIT_SCAN_URL}" }
+  zircuit_test = { key = "${ZIRCUIT_TEST_SCAN_KEY}", chain = 48899, url = "${ZIRCUIT_TEST_SCAN_URL}" }
+  morph = { key = "", chain = 2818, url = "${MORPH_SCAN_URL}" }
+  morph_test = { key = "", chain = 2810, url = "${MORPH_TEST_SCAN_URL}" }
 
 [fmt]
   bracket_spacing = true
@@ -42,14 +47,17 @@
   wrap_comments = true
 
 [rpc_endpoints]
-  arbitrum = "https://arbitrum-mainnet.infura.io/v3/${API_KEY_INFURA}"
-  avalanche = "https://avalanche-mainnet.infura.io/v3/${API_KEY_INFURA}"
-  base = "https://mainnet.base.org"
-  bnb_smart_chain = "https://bsc-dataseed.binance.org"
-  gnosis_chain = "https://rpc.gnosischain.com"
-  goerli = "https://goerli.infura.io/v3/${API_KEY_INFURA}"
-  localhost = "http://localhost:8545"
-  mainnet = "https://eth-mainnet.g.alchemy.com/v2/${API_KEY_ALCHEMY}"
-  optimism = "https://optimism-mainnet.infura.io/v3/${API_KEY_INFURA}"
-  polygon = "https://polygon-mainnet.infura.io/v3/${API_KEY_INFURA}"
-  sepolia = "https://sepolia.infura.io/v3/${API_KEY_INFURA}"
+  flow = "${FLOW_RPC_URL}"
+  flow_test = "${FLOW_TEST_RPC_URL}"
+  mantle = "${MANTLE_RPC_URL}"
+  mantle_sepolia = "${MANTLE_SEPOLIA_RPC_URL}"
+  scroll = "${SCROLL_RPC_URL}"
+  scroll_sepolia = "${SCROLL_SEPOLIA_RPC_URL}"
+  base = "${BASE_RPC_URL}"
+  base_sepolia = "${BASE_SEPOLIA_RPC_URL}"
+  polygon = "${POLYGON_RPC_URL}"
+  polygon_amoy = "${POLYGON_AMOY_RPC_URL}"
+  zircuit = "${ZIRCUIT_RPC_URL}"
+  zircuit_test = "${ZIRCUIT_TEST_RPC_URL}"
+  morph = "${MORPH_RPC_URL}"
+  morph_test = "${MORPH_TEST_RPC_URL}"
