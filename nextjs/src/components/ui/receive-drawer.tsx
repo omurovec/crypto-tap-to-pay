@@ -76,7 +76,7 @@ export default function ReceiveDrawer() {
     <div className="flex-1">
       <Drawer className="flex-1">
         <DrawerTrigger className="w-full">
-          <Button className="w-full h-14 bg-slate-500 text-lg rounded-2xl">
+          <Button className="w-full h-14 text-lg bg-slate-600 rounded-2xl">
             Receive
           </Button>
         </DrawerTrigger>
@@ -137,28 +137,39 @@ export default function ReceiveDrawer() {
           ) : (
             <>
               <DrawerHeader>
-                <DrawerTitle>Select amount</DrawerTitle>
+                <DrawerTitle className="text-2xl font-bold mb-8">
+                  Select amount
+                </DrawerTitle>
                 <DrawerDescription>
                   <Input
                     type="number"
-                    placeholder="USD"
+                    placeholder="Enter amount in USD"
                     onChange={(e) => setInputValue(e.target.value)}
+                    className="h-14 text-lg rounded-xl border-slate-200 bg-slate-50 focus:bg-white transition-colors"
                   />
                 </DrawerDescription>
               </DrawerHeader>
               <DrawerFooter>
-                <Button onClick={handleSubmission}>Receive</Button>
-                <DrawerClose>
+                <div className="flex gap-2 w-full">
                   <Button
-                    onClick={() => {
-                      setInputValue("");
-                      setSendAmount(undefined);
-                    }}
-                    variant="ghost"
+                    onClick={handleSubmission}
+                    className="flex-1 h-14 text-lg rounded-2xl"
                   >
-                    Cancel
+                    Receive
                   </Button>
-                </DrawerClose>
+                  <DrawerClose className="flex-1">
+                    <Button
+                      onClick={() => {
+                        setInputValue("");
+                        setSendAmount(undefined);
+                      }}
+                      variant="ghost"
+                      className="w-full h-14 text-lg rounded-2xl"
+                    >
+                      Cancel
+                    </Button>
+                  </DrawerClose>
+                </div>
               </DrawerFooter>
             </>
           )}
