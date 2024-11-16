@@ -72,13 +72,11 @@ export default function PayDrawer() {
     <div className="flex-1">
       <Drawer>
         {/* Pay modal */}
-        <DrawerTrigger className="w-full">
-          <Button
-            onClick={initPayment}
-            className="w-full h-14 text-lg rounded-2xl"
-          >
-            Pay
-          </Button>
+        <DrawerTrigger
+          className="w-full h-14 text-lg rounded-2xl bg-black text-white font-semibold"
+          onClick={initPayment}
+        >
+          Pay
         </DrawerTrigger>
         <DrawerContent>
           <DrawerHeader>

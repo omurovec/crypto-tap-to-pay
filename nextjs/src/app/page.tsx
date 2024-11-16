@@ -39,6 +39,7 @@ export default function Home() {
     });
   const isLoggedIn = useIsLoggedIn();
   const eoaAddress = useWalletAddress();
+  console.log("eoaAddress", eoaAddress);
 
   const {
     smartWalletAddress,
