@@ -1,0 +1,47 @@
+specVersion: 1.0.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: CustomSmartWalletFactory
+    network: base-sepolia
+    source:
+      address: "0x705f3124762253c8ef6b7a39f6c0ab9a6c2961ff"
+      abi: CustomSmartWalletFactory
+      startBlock: 18000037
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - CustomSmartWalletFactory__SmartWalletCreated
+      abis:
+        - name: CustomSmartWalletFactory
+          file: ./abis/CustomSmartWalletFactory.json
+      eventHandlers:
+        - event: CustomSmartWalletFactory__SmartWalletCreated(indexed address,indexed address)
+          handler: handleCustomSmartWalletFactory__SmartWalletCreated
+      file: ./src/custom-smart-wallet-factory.ts
+templates:
+  - name: CustomSmartWallet
+    kind: ethereum/contract
+    network: base-sepolia
+    source:
+      abi: CustomSmartWallet
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      file: ./src/custom-smart-wallet.ts
+      entities:
+        - CustomSmartWallet
+      abis:
+        - name: CustomSmartWallet
+          file: ./abis/CustomSmartWallet.json
+      eventHandlers:
+        - event: CustomSmartWallet__WithdrawLimitChanged(uint256,uint256)
+          handler: handleWithdrawLimitChanged
+        - event: CustomSmartWallet__Transferred(indexed address,indexed address,indexed address,uint256)
+          handler: handleTransferred

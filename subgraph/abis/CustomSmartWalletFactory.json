@@ -1,0 +1,85 @@
+[
+  {
+    "inputs": [],
+    "name": "CustomSmartWalletFactory__WalletAlreadyExists",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "smartWalletAddress",
+        "type": "address"
+      }
+    ],
+    "name": "CustomSmartWalletFactory__SmartWalletCreated",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "owner", "type": "address" },
+      {
+        "internalType": "uint256",
+        "name": "initialWithdrawLimit",
+        "type": "uint256"
+      },
+      { "internalType": "address", "name": "token", "type": "address" }
+    ],
+    "name": "createSmartWallet",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "owner", "type": "address" },
+      {
+        "internalType": "uint256",
+        "name": "initialWithdrawLimit",
+        "type": "uint256"
+      },
+      { "internalType": "address", "name": "token", "type": "address" }
+    ],
+    "name": "getWalletAddress",
+    "outputs": [
+      { "internalType": "address", "name": "smartWallet", "type": "address" },
+      { "internalType": "bool", "name": "deployed", "type": "bool" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "ownerAddress", "type": "address" },
+      {
+        "internalType": "uint256",
+        "name": "initialWithdrawLimit",
+        "type": "uint256"
+      },
+      { "internalType": "address", "name": "token", "type": "address" }
+    ],
+    "name": "precomputeWalletAddress",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "owner", "type": "address" }
+    ],
+    "name": "smartWallets",
+    "outputs": [
+      { "internalType": "address", "name": "smartWallet", "type": "address" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

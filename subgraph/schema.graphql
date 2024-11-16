@@ -1,0 +1,8 @@
+type CustomSmartWalletFactory__SmartWalletCreated @entity(immutable: true) {
+  id: Bytes!
+  owner: Bytes! # address
+  smartWalletAddress: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
