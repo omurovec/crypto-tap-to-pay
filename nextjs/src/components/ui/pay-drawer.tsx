@@ -19,7 +19,9 @@ import { sendTone, receiveTone } from "@/utils/ggwave";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 
 import HoldNearReader from "@/public/hold_reader.gif";
+import { DEFAULT_NETWORK } from "@/config/networks";
 import SuccessImg from "@/public/success.gif";
+import { useNonce } from "@/hooks/merchant/useNonce";
 
 const DECIMALS = 6n;
 
@@ -42,18 +44,28 @@ function encodeHexToBase64(hex) {
 export default function PayDrawer({ smartWalletAddress }) {
   const [sent, setSent] = useState(false);
   const { primaryWallet } = useDynamicContext();
+  const { isLoading, nonce, error } = useNonce({
+    network: DEFAULT_NETWORK,
+    smartWalletAddress: smartWalletAddress,
+  });
 
   const initPayment = async () => {
     await sendTone("o");
+    console.log({ smartWalletAddress, nonce, isLoading, error });
 
     receiveTone(async (response) => {
       try {
         let sendAmount = BigInt(response) * 10n ** DECIMALS;
         console.log(sendAmount);
+        console.log({
+          primaryWallet,
+          amount: sendAmount,
+          nonce,
+        });
         const signature = await createClaimSignature({
           primaryWallet,
           amount: sendAmount,
-          nonce: 0n, // TODO: Replace with proper nonce
+          nonce,
         });
 
         console.log("Sending signature...", signature);
