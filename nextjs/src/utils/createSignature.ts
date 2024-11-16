@@ -53,6 +53,8 @@ export async function createClaimSignature({
       message,
     });
 
+    return signature;
+
     // log the signature, private key, and message object
   } catch (error) {
     console.error("Error creating signature:", error);

@@ -21,6 +21,26 @@ const convertTypedArray = (src, type) => {
   return new type(buffer);
 };
 
+// Decode Base64 to hex string
+function decodeBase64ToHex(base64) {
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return bytesToHex(bytes);
+}
+
+// Helper function to convert a byte array to a hex string
+function bytesToHex(bytes) {
+  return (
+    "0x" +
+    Array.from(bytes)
+      .map((byte) => byte.toString(16).padStart(2, "0"))
+      .join("")
+  );
+}
+
 export default function ReceiveDrawer() {
   const [inputValue, setInputValue] = useState("");
   const [sendAmount, setSendAmount] = useState<number>();
@@ -36,7 +56,7 @@ export default function ReceiveDrawer() {
 
       var instance = ggwave.init(parameters);
 
-      var payload = "test";
+      var payload = inputValue;
 
       // generate audio waveform for string "hello js"
       var waveform = ggwave.encode(
@@ -102,7 +122,8 @@ export default function ReceiveDrawer() {
 
             if (res && res.length > 0) {
               res = new TextDecoder("utf-8").decode(res);
-              console.log(res);
+              let [address, signature] = res.split(" ").map(decodeBase64ToHex);
+              console.log(address, signature);
             }
           };
 
