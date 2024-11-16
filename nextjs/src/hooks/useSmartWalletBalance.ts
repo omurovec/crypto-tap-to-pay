@@ -3,9 +3,8 @@ import { Address } from "viem";
 import { NetworkType } from "@/config/networks";
 
 interface UseSmartWalletBalanceProps {
-  address: Address;
-  tokenAddress?: Address;
-  network?: NetworkType;
+  smartWalletAddress: Address;
+  network: NetworkType;
 }
 
 interface BalanceResult {
@@ -15,9 +14,8 @@ interface BalanceResult {
 }
 
 export function useSmartWalletBalance({
-  address,
-  tokenAddress,
-  network = "base",
+  smartWalletAddress,
+  network,
 }: UseSmartWalletBalanceProps): BalanceResult {
   const [balance, setBalance] = useState<string>("0");
   const [isLoading, setIsLoading] = useState(true);
@@ -29,18 +27,16 @@ export function useSmartWalletBalance({
         setIsLoading(true);
 
         const response = await fetch(
-          `/api/balance?address=${address}&network=${network}${
-            tokenAddress ? `&tokenAddress=${tokenAddress}` : ""
-          }`
+          `/api/usdc-balance?address=${smartWalletAddress}&network=${network}`
         );
         const data = await response.json();
 
         if (!response.ok) {
+          setError(data.error);
           throw new Error(data.error || "Failed to fetch balance");
         }
 
-        setBalance(data.balance);
-        setError(null);
+        setBalance(data.data[0].amount);
       } catch (err) {
         setError(
           err instanceof Error ? err : new Error("Failed to fetch balance")
@@ -51,10 +47,10 @@ export function useSmartWalletBalance({
       }
     };
 
-    if (address) {
+    if (smartWalletAddress) {
       fetchBalance();
     }
-  }, [address, tokenAddress, network]);
+  }, [smartWalletAddress, network]);
 
   return { balance, isLoading, error };
 }
