@@ -57,7 +57,7 @@ contract CustomSmartWallet is Ownable, EIP712 {
         if (usedSignatures[signature]) revert CustomSmartWallet__SignatureAlreadyUsed();
 
         // verify signature
-        if (!_verifyClaim(signature, claim, owner())) revert CustomSmartWallet__InvalidSignature();
+        if (!verifyClaim(signature, claim, owner())) revert CustomSmartWallet__InvalidSignature();
 
         // verify amount is below limit
         if (claim.amount > withdrawLimit) revert CustomSmartWallet__WithdrawLimitExceeded();
@@ -69,15 +69,7 @@ contract CustomSmartWallet is Ownable, EIP712 {
         IERC20(token).transfer(msg.sender, claim.amount);
     }
 
-    function _verifyClaim(
-        bytes calldata signature,
-        Claim calldata claim,
-        address signer
-    )
-        internal
-        view
-        returns (bool)
-    {
+    function verifyClaim(bytes calldata signature, Claim calldata claim, address signer) public view returns (bool) {
         return _hashTypedDataV4(keccak256(_encodeClaim(claim))).recover(signature) == signer;
     }
 
