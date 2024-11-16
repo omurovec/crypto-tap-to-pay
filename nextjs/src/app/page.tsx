@@ -1,7 +1,8 @@
 "use client";
+
+import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/Button";
 import {
   Drawer,
   DrawerClose,
@@ -12,7 +13,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { Input } from "@/components/ui/Input";
 import ReceiveDrawer from "@/components/ui/receive-drawer";
 import PayDrawer from "@/components/ui/pay-drawer";
 import {
@@ -30,18 +30,15 @@ import { DEFAULT_NETWORK } from "@/config/networks";
 import { useSmartWalletAddress } from "@/hooks/useSmartWalletAddress";
 import { useDeploySmartWallet } from "@/hooks/useDeploySmartWallet";
 import logo from "@/assets/logo.jpg";
-import { useEffect, useMemo, useState } from "react";
-import {
-  useDynamicContext,
-  useSwitchNetwork,
-} from "@dynamic-labs/sdk-react-core";
-import { baseSepolia } from "viem/chains";
 
 export default function Home() {
+  const { deploySmartWallet, isLoading: isDeployingSmartWallet } =
+    useDeploySmartWallet({
+      network: DEFAULT_NETWORK,
+    });
   const isLoggedIn = useIsLoggedIn();
-  const switchNetwork = useSwitchNetwork();
   const eoaAddress = useWalletAddress();
-  const { primaryWallet } = useDynamicContext();
+  console.log("eoaAddress", eoaAddress);
   const {
     smartWalletAddress,
     isLoading: isSmartWalletAddressLoading,
@@ -50,6 +47,10 @@ export default function Home() {
     eoaAddress: eoaAddress as `0x${string}`,
     network: DEFAULT_NETWORK,
   });
+
+  const smartWalletExists =
+    smartWalletAddress != "0x0000000000000000000000000000000000000000";
+
   const {
     balance: walletBalance,
     isLoading: isWalletBalanceLoading,
@@ -58,52 +59,27 @@ export default function Home() {
     walletAddress: smartWalletAddress as `0x${string}`,
     network: DEFAULT_NETWORK,
   });
-  const {
-    deploySmartWallet,
-    isLoading: deployIsLoading,
-    error: deployError,
-  } = useDeploySmartWallet({
-    network: DEFAULT_NETWORK,
-  });
-  const [deployingSmartWallet, setDeployingSmartWallet] = useState(false);
 
-  const usdcBalance = formatUsdc(BigInt(walletBalance));
+  const usdcBalance = smartWalletExists
+    ? formatUsdc(BigInt(walletBalance))
+    : {
+        whole: "0",
+        decimal: "00",
+      };
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(smartWalletAddress || "");
   };
 
-  const needsSmartContractWallet = useMemo(() => {
-    return (
-      !isSmartWalletAddressLoading &&
-      smartWalletAddress === "0x0000000000000000000000000000000000000000"
-    );
-  }, [isSmartWalletAddressLoading, smartWalletAddress]);
-
   useEffect(() => {
-    if (
-      !isSmartWalletAddressLoading &&
-      smartWalletAddress === "0x0000000000000000000000000000000000000000" &&
-      !deployingSmartWallet
-    ) {
-      setDeployingSmartWallet(true);
-      console.log(eoaAddress);
-      primaryWallet?.getWalletClient().then((walletClient) => {
-        deploySmartWallet(
-          eoaAddress as `0x${string}`,
-          BigInt(100n * 10n ** 6n),
-          walletClient,
-        )
-          .then((res) => {
-            console.log("Deployed smart wallet", res);
-            setDeployingSmartWallet(false);
-          })
-          .catch((err) => {
-            console.error(err);
-          });
-      });
+    if (!smartWalletExists) {
+      deploySmartWallet(
+        eoaAddress as `0x${string}`,
+        BigInt(100000000),
+        "0x705f3124762253c8ef6b7a39f6c0ab9a6c2961ff"
+      );
     }
-  }, [needsSmartContractWallet]);
+  }, [smartWalletExists]);
 
   if (!isLoggedIn) {
     return (
@@ -112,8 +88,8 @@ export default function Home() {
           src={logo}
           width={100}
           height={100}
-          alt="Over the Ether logo"
           className="rounded-3xl mb-4"
+          alt="logo"
         />
         <h1 className="text-4xl font-bold text-left tracking-tighter">
           Over the Ether
@@ -122,66 +98,6 @@ export default function Home() {
           Welcome 👋
         </p>
         <DynamicWidget />
-      </div>
-    );
-  }
-
-  if (isSmartWalletAddressLoading) {
-    return (
-      <div className="flex flex-col items-center content center mt-40">
-        <Image
-          src={logo}
-          width={100}
-          height={100}
-          alt="Over the Ether logo"
-          className="rounded-3xl mb-4"
-        />
-        <h1 className="text-4xl font-bold text-left tracking-tighter">
-          Over the Ether
-        </h1>
-        <p className="mt-2 mb-6 text-muted-foreground font-semibold text-slate-500">
-          Loading...
-        </p>
-      </div>
-    );
-  }
-
-  if (smartWalletAddressError) {
-    return (
-      <div className="flex flex-col items-center content center mt-40">
-        <Image
-          src={logo}
-          width={100}
-          height={100}
-          alt="Over the Ether logo"
-          className="rounded-3xl mb-4"
-        />
-        <h1 className="text-4xl font-bold text-left tracking-tighter">
-          Over the Ether
-        </h1>
-        <p className="mt-2 mb-6 text-muted-foreground font-semibold text-slate-500">
-          Error loading smart wallet address
-        </p>
-      </div>
-    );
-  }
-
-  if (deployingSmartWallet) {
-    return (
-      <div className="flex flex-col items-center content center mt-40">
-        <Image
-          src={logo}
-          width={100}
-          height={100}
-          alt="Over the Ether logo"
-          className="rounded-3xl mb-4"
-        />
-        <h1 className="text-4xl font-bold text-left tracking-tighter">
-          Over the Ether
-        </h1>
-        <p className="mt-2 mb-6 text-muted-foreground font-semibold text-slate-500">
-          Deploying smart wallet...
-        </p>
       </div>
     );
   }
