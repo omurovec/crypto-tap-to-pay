@@ -47,7 +47,7 @@ export function useNonce({
 
   useEffect(() => {
     getNonce();
-  }, [nonce]);
+  }, [nonce, smartWalletAddress]);
 
   return {
     nonce,
