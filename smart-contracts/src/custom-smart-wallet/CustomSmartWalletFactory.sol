@@ -28,16 +28,41 @@ contract CustomSmartWalletFactory {
         return address(smartWallet);
     }
 
-    function precomputeWalletAddress(address ownerAddress) public view returns (address) {
-        bytes32 salt = bytes32(bytes20(uint160(address(ownerAddress))));
-        bytes memory creationCodeValue =
-            abi.encodePacked(type(CustomSmartWallet).creationCode, abi.encode(ownerAddress));
-        bytes32 hash = keccak256(abi.encodePacked(bytes1(0xff), address(this), salt, keccak256(creationCodeValue)));
+    function precomputeWalletAddress(
+        address ownerAddress,
+        bytes32 px,
+        bytes32 py,
+        uint256 initialWithdrawLimit
+    )
+        public
+        view
+        returns (address)
+    {
+        bytes memory creationCodeValue = abi.encodePacked(
+            type(CustomSmartWallet).creationCode, abi.encode(ownerAddress, px, py, initialWithdrawLimit)
+        );
+        bytes32 hash = keccak256(
+            abi.encodePacked(
+                bytes1(0xff),
+                address(this),
+                bytes32(bytes20(uint160(address(ownerAddress)))),
+                keccak256(creationCodeValue)
+            )
+        );
         return address(uint160(uint256(hash)));
     }
 
-    function getWalletAddress(address owner) public view returns (address smartWallet, bool deployed) {
-        smartWallet = precomputeWalletAddress(owner);
+    function getWalletAddress(
+        address owner,
+        bytes32 px,
+        bytes32 py,
+        uint256 initialWithdrawLimit
+    )
+        public
+        view
+        returns (address smartWallet, bool deployed)
+    {
+        smartWallet = precomputeWalletAddress(owner, px, py, initialWithdrawLimit);
         if (smartWallets[owner] != address(0)) {
             deployed = true;
         }
