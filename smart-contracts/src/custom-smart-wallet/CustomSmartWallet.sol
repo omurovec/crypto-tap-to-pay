@@ -3,40 +3,48 @@ pragma solidity >=0.8.25;
 
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
-import { P256 } from "@openzeppelin/contracts/utils/cryptography/P256.sol";
+import { EIP712 } from "@openzeppelin/contracts/utils/cryptography/EIP712.sol";
+import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
-error CustomSmartWallet__InvalidPublicKey();
+error CustomSmartWallet__SignatureAlreadyUsed();
 error CustomSmartWallet__InvalidSignature();
-error CustomSmartWallet__InvalidMessageHash();
+error CustomSmartWallet__WithdrawLimitExceeded();
 
-// TODO:
-// [X] - Specify limit
-// [X] - Keep track of funds (might not have to do that bc of `hasFunds` function)
-// [X] - Extract data from message
+contract CustomSmartWallet is Ownable, EIP712 {
+    using ECDSA for bytes32;
 
-contract CustomSmartWallet is Ownable {
-    using P256 for bytes32;
+    struct Claim {
+        uint256 amount;
+        uint256 nonce;
+    }
 
-    // P256 public key coordinates of the owner (needed for signature verification)
-    bytes32 private px;
-    bytes32 private py;
+    bytes32 public constant CLAIM_TYPEHASH = keccak256("Claim(uint256 amount,uint256 nonce)");
 
+    // token for withdrawal
+    address private token;
     // withdraw limit for claims
     uint256 private withdrawLimit;
+    // nonce for signatures
+    uint256 public nonce;
 
-    constructor(address owner, bytes32 _px, bytes32 _py, uint256 initialWithdrawLimit) Ownable(owner) {
-        // check if valid public key
-        if (!_px.isValidPublicKey(_py)) revert CustomSmartWallet__InvalidPublicKey();
+    /// @dev signature => already used
+    mapping(bytes => bool) private usedSignatures;
 
-        px = _px;
-        py = _py;
-
+    constructor(
+        address owner,
+        uint256 initialWithdrawLimit,
+        address _token
+    )
+        Ownable(owner)
+        EIP712("CustomSmartWallet", "1")
+    {
+        token = _token;
         withdrawLimit = initialWithdrawLimit;
     }
 
     /// @dev View function that app can use to check that the wallet has enough funds
-    function hasFunds(address token, uint256 amount) external view returns (bool) {
+    function hasFunds(uint256 amount) external view returns (bool) {
         return IERC20(token).balanceOf(address(this)) >= amount;
     }
 
@@ -44,21 +52,28 @@ contract CustomSmartWallet is Ownable {
         withdrawLimit = newLimit;
     }
 
-    function claimFunds(bytes32 hashedMessage, bytes32 r, bytes32 s, bytes calldata message) external {
+    function claimFunds(bytes calldata signature, Claim calldata claim) external {
+        // verify signature has not been used yet
+        if (usedSignatures[signature]) revert CustomSmartWallet__SignatureAlreadyUsed();
+
         // verify signature
-        if (!hashedMessage.verify({ r: r, s: s, qx: px, qy: py })) revert CustomSmartWallet__InvalidSignature();
+        if (!verifyClaim(signature, claim, owner())) revert CustomSmartWallet__InvalidSignature();
 
-        // verify that the hashedMessage is a valid hash of the message
-        if (keccak256(message) != hashedMessage) revert CustomSmartWallet__InvalidMessageHash();
+        // verify amount is below limit
+        if (claim.amount > withdrawLimit) revert CustomSmartWallet__WithdrawLimitExceeded();
 
-        // extract data from the message
-
-        // first 20 bytes are the token address
-        address token = address(bytes20(message[:20]));
-        // next 32 bytes are the amount
-        uint256 amount = uint256(bytes32(message[20:52]));
+        // mark signature as used
+        usedSignatures[signature] = true;
 
         // transfer the funds
-        IERC20(token).transfer(msg.sender, amount);
+        IERC20(token).transfer(msg.sender, claim.amount);
+    }
+
+    function verifyClaim(bytes calldata signature, Claim calldata claim, address signer) public view returns (bool) {
+        return _hashTypedDataV4(keccak256(_encodeClaim(claim))).recover(signature) == signer;
+    }
+
+    function _encodeClaim(Claim calldata claim) internal pure returns (bytes memory) {
+        return abi.encode(CLAIM_TYPEHASH, claim.amount, claim.nonce);
     }
 }

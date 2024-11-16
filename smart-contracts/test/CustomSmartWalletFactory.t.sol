@@ -12,8 +12,7 @@ contract CustomSmartWalletFactoryTest is Test {
     CustomSmartWallet internal customSmartWallet;
     address internal customSmartWalletAddress;
 
-    bytes32 P_X = bytes32(0xd961005d2b19b117c27187fb4bffc0d5b96c8f39eb0c7476fb69e6efc88fa5be);
-    bytes32 P_Y = bytes32(0x848150bcbdc70e6545f27070b840f9f5188bb8cad0cab28e107e200be9cde9d2);
+    address token = address(1);
     uint256 INITIAL_LIMIT = 100e18;
 
     function setUp() public virtual {
@@ -25,37 +24,37 @@ contract CustomSmartWalletFactoryTest is Test {
         console.log(address(this));
 
         // assert wallet address is NOT yet stored in mapping
-        (, bool deployedPre) = customSmartWalletFactory.getWalletAddress(address(this), P_X, P_Y, INITIAL_LIMIT);
+        (, bool deployedPre) = customSmartWalletFactory.getWalletAddress(address(this), INITIAL_LIMIT, token);
         assert(deployedPre == false);
 
         // deploy CustomSmartWallet belonging to address(this)
-        customSmartWalletAddress = customSmartWalletFactory.createSmartWallet(P_X, P_Y, INITIAL_LIMIT);
+        customSmartWalletAddress = customSmartWalletFactory.createSmartWallet(INITIAL_LIMIT, token);
     }
 
     function test_FactoryPrecomputeWallet() external {
         // deploy CustomSmartWallet belonging to address(this)
-        customSmartWalletAddress = customSmartWalletFactory.createSmartWallet(P_X, P_Y, INITIAL_LIMIT);
+        customSmartWalletAddress = customSmartWalletFactory.createSmartWallet(INITIAL_LIMIT, token);
 
         // assert wallet address can be precomputed
         assert(
             customSmartWalletAddress
-                == customSmartWalletFactory.precomputeWalletAddress(address(this), P_X, P_Y, INITIAL_LIMIT)
+                == customSmartWalletFactory.precomputeWalletAddress(address(this), INITIAL_LIMIT, token)
         );
 
         // assert wallet address is different when using a different owner
         assert(
             customSmartWalletAddress
-                != customSmartWalletFactory.precomputeWalletAddress(address(123), P_X, P_Y, INITIAL_LIMIT)
+                != customSmartWalletFactory.precomputeWalletAddress(address(123), INITIAL_LIMIT, token)
         );
     }
 
     function test_FactoryGetWallet() external {
         // deploy CustomSmartWallet belonging to address(this)
-        customSmartWalletAddress = customSmartWalletFactory.createSmartWallet(P_X, P_Y, INITIAL_LIMIT);
+        customSmartWalletAddress = customSmartWalletFactory.createSmartWallet(INITIAL_LIMIT, token);
 
         // assert wallet address is stored in mapping
         (address walletAddress, bool deployedPost) =
-            customSmartWalletFactory.getWalletAddress(address(this), P_X, P_Y, INITIAL_LIMIT);
+            customSmartWalletFactory.getWalletAddress(address(this), INITIAL_LIMIT, token);
         assert(walletAddress == customSmartWalletAddress);
         assert(deployedPost == true);
     }

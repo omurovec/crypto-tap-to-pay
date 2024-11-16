@@ -11,14 +11,14 @@ contract CustomSmartWalletFactory {
     // Mapping from owner address to their deployed smart wallet address
     mapping(address owner => address smartWallet) public smartWallets;
 
-    function createSmartWallet(bytes32 px, bytes32 py, uint256 initialWithdrawLimit) external returns (address) {
+    function createSmartWallet(uint256 initialWithdrawLimit, address token) external returns (address) {
         // Check if wallet already exists for this owner
         if (smartWallets[msg.sender] != address(0)) revert CustomSmartWalletFactory__WalletAlreadyExists();
 
         // Deploy new CustomSmartWallet
         ///@dev https://docs.soliditylang.org/en/latest/control-structures.html#salted-contract-creations-create2
         bytes32 salt = bytes32(bytes20(uint160(address(msg.sender))));
-        CustomSmartWallet smartWallet = new CustomSmartWallet{ salt: salt }(msg.sender, px, py, initialWithdrawLimit);
+        CustomSmartWallet smartWallet = new CustomSmartWallet{ salt: salt }(msg.sender, initialWithdrawLimit, token);
 
         // Store wallet address in mapping
         smartWallets[msg.sender] = address(smartWallet);
@@ -30,16 +30,15 @@ contract CustomSmartWalletFactory {
 
     function precomputeWalletAddress(
         address ownerAddress,
-        bytes32 px,
-        bytes32 py,
-        uint256 initialWithdrawLimit
+        uint256 initialWithdrawLimit,
+        address token
     )
         public
         view
         returns (address)
     {
         bytes memory creationCodeValue = abi.encodePacked(
-            type(CustomSmartWallet).creationCode, abi.encode(ownerAddress, px, py, initialWithdrawLimit)
+            type(CustomSmartWallet).creationCode, abi.encode(ownerAddress, initialWithdrawLimit, token)
         );
         bytes32 hash = keccak256(
             abi.encodePacked(
@@ -54,15 +53,14 @@ contract CustomSmartWalletFactory {
 
     function getWalletAddress(
         address owner,
-        bytes32 px,
-        bytes32 py,
-        uint256 initialWithdrawLimit
+        uint256 initialWithdrawLimit,
+        address token
     )
         public
         view
         returns (address smartWallet, bool deployed)
     {
-        smartWallet = precomputeWalletAddress(owner, px, py, initialWithdrawLimit);
+        smartWallet = precomputeWalletAddress(owner, initialWithdrawLimit, token);
         if (smartWallets[owner] != address(0)) {
             deployed = true;
         }
