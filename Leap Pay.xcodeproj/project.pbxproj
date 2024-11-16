@@ -14,6 +14,7 @@
 		1B5A514E2CE7A3C700A1B3D4 /* Leap_PayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B5A514D2CE7A3C700A1B3D4 /* Leap_PayTests.swift */; };
 		1B5A51582CE7A3C700A1B3D4 /* Leap_PayUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B5A51572CE7A3C700A1B3D4 /* Leap_PayUITests.swift */; };
 		1B5A515A2CE7A3C700A1B3D4 /* Leap_PayUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B5A51592CE7A3C700A1B3D4 /* Leap_PayUITestsLaunchTests.swift */; };
+		1B5A51682CE7A44200A1B3D4 /* nfc_test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B5A51672CE7A44200A1B3D4 /* nfc_test.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -44,6 +45,8 @@
 		1B5A51532CE7A3C700A1B3D4 /* Leap PayUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Leap PayUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B5A51572CE7A3C700A1B3D4 /* Leap_PayUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Leap_PayUITests.swift; sourceTree = "<group>"; };
 		1B5A51592CE7A3C700A1B3D4 /* Leap_PayUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Leap_PayUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		1B5A51662CE7A42C00A1B3D4 /* Leap Pay.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Leap Pay.entitlements"; sourceTree = "<group>"; };
+		1B5A51672CE7A44200A1B3D4 /* nfc_test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = nfc_test.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +97,8 @@
 		1B5A513B2CE7A3C500A1B3D4 /* Leap Pay */ = {
 			isa = PBXGroup;
 			children = (
+				1B5A51662CE7A42C00A1B3D4 /* Leap Pay.entitlements */,
+				1B5A51672CE7A44200A1B3D4 /* nfc_test.swift */,
 				1B5A513C2CE7A3C500A1B3D4 /* Leap_PayApp.swift */,
 				1B5A513E2CE7A3C500A1B3D4 /* ContentView.swift */,
 				1B5A51402CE7A3C700A1B3D4 /* Assets.xcassets */,
@@ -258,6 +263,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1B5A513F2CE7A3C500A1B3D4 /* ContentView.swift in Sources */,
+				1B5A51682CE7A44200A1B3D4 /* nfc_test.swift in Sources */,
 				1B5A513D2CE7A3C500A1B3D4 /* Leap_PayApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -419,6 +425,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Leap Pay/Leap Pay.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Leap Pay/Preview Content\"";
@@ -435,7 +442,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.leappay.Leap-Pay";
+				PRODUCT_BUNDLE_IDENTIFIER = com.leappay;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -448,6 +455,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Leap Pay/Leap Pay.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Leap Pay/Preview Content\"";
