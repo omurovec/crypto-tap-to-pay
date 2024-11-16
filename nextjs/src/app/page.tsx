@@ -28,6 +28,7 @@ import { useWalletAddress } from "@/hooks/dynamic/useWalletAddress";
 import { useWalletBalance } from "@/hooks/useWalletBalance";
 import { DEFAULT_NETWORK } from "@/config/networks";
 import { useSmartWalletAddress } from "@/hooks/useSmartWalletAddress";
+import logo from "@/assets/logo.jpg";
 
 export default function Home() {
   const isLoggedIn = useIsLoggedIn();
@@ -55,7 +56,28 @@ export default function Home() {
     navigator.clipboard.writeText(smartWalletAddress || "");
   };
 
-  return isLoggedIn ? (
+  if (!isLoggedIn) {
+    return (
+      <div className="flex flex-col items-center content center mt-40">
+        <Image
+          src={logo}
+          width={100}
+          height={100}
+          className="rounded-3xl mb-4"
+        />
+        <h1 className="text-4xl font-bold text-left tracking-tighter">
+          Over the Ether
+        </h1>
+
+        <p className="mt-2 mb-6 text-muted-foreground font-semibold text-slate-500">
+          Welcome 👋
+        </p>
+        <DynamicWidget />
+      </div>
+    );
+  }
+
+  return (
     <div className="w-full">
       {/* Header */}
       <div className="flex mx-auto flex-col items-center mt-36">
@@ -96,7 +118,5 @@ export default function Home() {
       {/* History */}
       <div></div>
     </div>
-  ) : (
-    <DynamicWidget />
   );
 }
