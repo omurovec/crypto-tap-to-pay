@@ -39,7 +39,6 @@ export default function Home() {
     });
   const isLoggedIn = useIsLoggedIn();
   const eoaAddress = useWalletAddress();
-  console.log("eoaAddress", eoaAddress);
 
   const {
     smartWalletAddress,
@@ -52,10 +51,6 @@ export default function Home() {
 
   const smartWalletExists =
     smartWalletAddress != "0x0000000000000000000000000000000000000000";
-
-  if (smartWalletExists) {
-    console.log("smartWalletExists", smartWalletAddress);
-  }
 
   const {
     balance: walletBalance,
