@@ -1,11 +1,11 @@
 import { base, baseSepolia } from "viem/chains";
 
 export const NETWORK_CONFIG = {
-  base: {
+  8453: {
     chain: base,
     rpcUrl: process.env.NEXT_PUBLIC_BASE_RPC_URL,
   },
-  baseSepolia: {
+  84532: {
     chain: baseSepolia,
     rpcUrl: process.env.NEXT_PUBLIC_BASE_SEPOLIA_RPC_URL,
   },
@@ -14,11 +14,11 @@ export const NETWORK_CONFIG = {
 export type NetworkType = keyof typeof NETWORK_CONFIG;
 
 export const DEPLOYMENT_ADDRESSES: { [key in NetworkType]: `0x${string}` } = {
-  base: "0x0000000000000000000000000000000000000000",
-  baseSepolia: "0x0000000000000000000000000000000000000000",
+  8453: "0x0000000000000000000000000000000000000000",
+  84532: "0x0000000000000000000000000000000000000000",
 };
 
 export const COINBASE_API_NETWORK_CONFIG: { [key in NetworkType]: string } = {
-  base: "base-mainnet",
-  baseSepolia: "base-sepolia",
+  8453: "base-mainnet",
+  84532: "base-sepolia",
 };
