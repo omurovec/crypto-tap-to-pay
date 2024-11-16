@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -52,21 +52,37 @@ export default function Home() {
   const smartWalletExists =
     smartWalletAddress != "0x0000000000000000000000000000000000000000";
 
+  const [walletBalance, setWalletBalance] = useState(BigInt(0));
+
   const {
-    balance: walletBalance,
-    isLoading: isWalletBalanceLoading,
-    error: walletBalanceError,
+    balance: smartWalletBalance,
+    isLoading: isSmartWalletBalanceLoading,
+    error: smartWalletBalanceError,
   } = useWalletBalance({
     walletAddress: smartWalletAddress as `0x${string}`,
     network: DEFAULT_NETWORK,
   });
 
-  const usdcBalance = smartWalletExists
-    ? formatUsdc(BigInt(walletBalance))
-    : {
-        whole: "0",
-        decimal: "00",
-      };
+  const {
+    balance: eoaBalance,
+    isLoading: isEoaBalanceLoading,
+    error: eoaBalanceError,
+  } = useWalletBalance({
+    walletAddress: eoaAddress as `0x${string}`,
+    network: DEFAULT_NETWORK,
+  });
+
+  const [usdcBalance, setUsdcBalance] = useState({
+    whole: "0",
+    decimal: "00",
+  });
+
+  // const usdcBalance = smartWalletExists
+  //   ? formatUsdc(BigInt(walletBalance))
+  //   : {
+  //       whole: "0",
+  //       decimal: "00",
+  //     };
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(smartWalletAddress || "");
@@ -77,10 +93,26 @@ export default function Home() {
       deploySmartWallet(
         eoaAddress as `0x${string}`,
         BigInt(100000000),
-        TOKEN_ADDRESSES[DEFAULT_NETWORK],
+        TOKEN_ADDRESSES[DEFAULT_NETWORK]
       );
     }
   }, [smartWalletExists]);
+
+  useEffect(() => {
+    if (smartWalletBalance && eoaBalance) {
+      setWalletBalance(BigInt(smartWalletBalance) + BigInt(eoaBalance));
+    }
+  }, [smartWalletBalance, eoaBalance]);
+
+  useEffect(() => {
+    if (walletBalance) {
+      updateUsdcBalance();
+    }
+  }, [walletBalance]);
+
+  const updateUsdcBalance = () => {
+    setUsdcBalance(formatUsdc(walletBalance));
+  };
 
   if (!isLoggedIn) {
     return (

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Drawer,
   DrawerClose,
@@ -18,7 +18,12 @@ import HoldNearReader from "@/public/hold_reader.gif";
 import SuccessImg from "@/public/success.gif";
 import { DEFAULT_NETWORK } from "@/config/networks";
 import { useClaimFunds } from "@/hooks/merchant/useClaimFunds";
-import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
+import {
+  useDynamicContext,
+  useSwitchNetwork,
+} from "@dynamic-labs/sdk-react-core";
+
+import { baseSepolia } from "viem/chains";
 
 const convertTypedArray = (src: any, type: any) => {
   var buffer = new ArrayBuffer(src.byteLength);
@@ -55,6 +60,20 @@ export default function ReceiveDrawer() {
   });
   const { primaryWallet } = useDynamicContext();
 
+  const switchNetwork = useSwitchNetwork();
+
+  useEffect(() => {
+    if (primaryWallet != null) {
+      console.log("Switching to baseSepolia");
+      checkNetwork();
+    }
+  }, [primaryWallet, DEFAULT_NETWORK]);
+
+  const checkNetwork = async () => {
+    const network = await primaryWallet?.getNetwork();
+    console.log(network);
+  };
+
   const handleSubmission = async () => {
     setSendAmount(Number(inputValue));
 
@@ -80,7 +99,7 @@ export default function ReceiveDrawer() {
                   primaryWallet,
                   signature,
                   BigInt(inputValue) * BigInt(10) ** BigInt(6),
-                  address,
+                  address
                 );
                 setReceived(true);
               }
