@@ -11,7 +11,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import factory from "ggwave";
 import { createClaimSignature } from "@/utils/createSignature";
 import { privateKeyToAccount } from "viem/accounts";
@@ -23,10 +23,10 @@ import { DEFAULT_NETWORK } from "@/config/networks";
 import SuccessImg from "@/public/success.gif";
 import { useNonce } from "@/hooks/merchant/useNonce";
 
-const DECIMALS = 6n;
+const DECIMALS = BigInt(6);
 
 // Helper function to convert a hex string to a byte array
-function hexToBytes(hex) {
+function hexToBytes(hex: any) {
   if (hex.startsWith("0x")) hex = hex.slice(2);
   const bytes = new Uint8Array(hex.length / 2);
   for (let i = 0; i < hex.length; i += 2) {
@@ -36,17 +36,21 @@ function hexToBytes(hex) {
 }
 
 // Encode hex string to Base64
-function encodeHexToBase64(hex) {
+function encodeHexToBase64(hex: any) {
   const bytes = hexToBytes(hex);
   return btoa(String.fromCharCode(...bytes));
 }
 
-export default function PayDrawer({ smartWalletAddress }) {
+export default function PayDrawer({
+  smartWalletAddress,
+}: {
+  smartWalletAddress: string;
+}) {
   const [sent, setSent] = useState(false);
   const { primaryWallet } = useDynamicContext();
   const { isLoading, nonce, error } = useNonce({
     network: DEFAULT_NETWORK,
-    smartWalletAddress: smartWalletAddress,
+    smartWalletAddress: smartWalletAddress as `0x${string}`,
   });
 
   const initPayment = async () => {
@@ -55,7 +59,7 @@ export default function PayDrawer({ smartWalletAddress }) {
 
     receiveTone(async (response) => {
       try {
-        let sendAmount = BigInt(response) * 10n ** DECIMALS;
+        let sendAmount = BigInt(response) * BigInt(10) ** DECIMALS;
         console.log(sendAmount);
         console.log({
           primaryWallet,
@@ -64,16 +68,16 @@ export default function PayDrawer({ smartWalletAddress }) {
         });
         const signature = await createClaimSignature({
           primaryWallet,
-          smartWalletAddress,
+          smartWalletAddress: smartWalletAddress as `0x${string}`,
           amount: sendAmount,
-          nonce,
+          nonce: nonce!,
         });
 
         console.log("Sending signature...", signature);
 
         const address = smartWalletAddress;
         await sendTone(
-          encodeHexToBase64(address) + " " + encodeHexToBase64(signature),
+          encodeHexToBase64(address) + " " + encodeHexToBase64(signature)
         );
         setTimeout(() => setSent(true), 10000);
       } catch (e) {
