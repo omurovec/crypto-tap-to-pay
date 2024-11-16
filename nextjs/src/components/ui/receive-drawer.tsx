@@ -10,9 +10,8 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Skeleton } from "@/components/ui/Skeleton";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { receiveTone, sendTone } from "@/utils/ggwave";
 import Image from "next/image";
 import HoldNearReader from "@/public/hold_reader.gif";
@@ -96,7 +95,7 @@ export default function ReceiveDrawer() {
 
   return (
     <div className="flex-1">
-      <Drawer className="flex-1">
+      <Drawer>
         <DrawerTrigger className="w-full h-14 text-lg bg-slate-600 rounded-2xl text-white font-semibold">
           Receive
         </DrawerTrigger>
