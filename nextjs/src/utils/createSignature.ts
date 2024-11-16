@@ -15,10 +15,11 @@ const TYPES = {
     { name: "amount", type: "uint256" },
     { name: "nonce", type: "uint256" },
   ],
-} as const;
+};
 
 interface SignatureParams {
   primaryWallet: any;
+  smartWalletAddress: `0x${string}`;
   amount: bigint;
   nonce: bigint;
   chainId?: number;
@@ -26,6 +27,7 @@ interface SignatureParams {
 
 export async function createClaimSignature({
   primaryWallet,
+  smartWalletAddress,
   amount,
   nonce,
   chainId = 84532,
@@ -47,7 +49,7 @@ export async function createClaimSignature({
 
     // Sign the typed data
     const signature = await walletClient.signTypedData({
-      domain: { ...DOMAIN, chainId },
+      domain: { ...DOMAIN, chainId, verifyingContract: smartWalletAddress },
       types: TYPES,
       primaryType: "Claim",
       message,

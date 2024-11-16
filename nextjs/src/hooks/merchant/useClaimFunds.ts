@@ -9,7 +9,6 @@ import { isEthereumWallet } from "@dynamic-labs/ethereum";
 
 interface UseClaimFundsProps {
   network: NetworkType;
-  primaryWallet: any;
 }
 
 interface ClaimFundsResult {
@@ -69,7 +68,7 @@ export function useClaimFunds({
         address: smartWalletAddress as `0x${string}`,
         abi: CustomSmartWalletABI,
         functionName: "claimFunds",
-        args: [signature, { amount, nonce }],
+        args: [signature, [amount, nonce]],
         account: walletClient.account,
       });
 
