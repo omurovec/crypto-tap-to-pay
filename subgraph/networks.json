@@ -1,8 +1,8 @@
 {
   "base-sepolia": {
     "CustomSmartWalletFactory": {
-      "address": "0x705f3124762253c8ef6b7a39f6c0ab9a6c2961ff",
-      "startBlock": 18000037
+      "address": "0xd917c0B94d89309c51DbC070DEA5bF780a319BA2",
+      "startBlock": 18005223
     }
   }
 }
