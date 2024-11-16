@@ -8,7 +8,7 @@ import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
 error CustomSmartWallet__InvalidPublicKey();
 error CustomSmartWallet__InvalidSignature();
-error CustomSmartWallet__InvalidMessageHash();
+error CustomSmartWallet__WithdrawLimitExceeded();
 
 // TODO:
 // [X] - Specify limit
@@ -44,19 +44,12 @@ contract CustomSmartWallet is Ownable {
         withdrawLimit = newLimit;
     }
 
-    function claimFunds(bytes32 hashedMessage, bytes32 r, bytes32 s, bytes calldata message) external {
+    function claimFunds(bytes32 hashedMessage, bytes32 r, bytes32 s, address token, uint256 amount) external {
         // verify signature
         if (!hashedMessage.verify({ r: r, s: s, qx: px, qy: py })) revert CustomSmartWallet__InvalidSignature();
 
-        // verify that the hashedMessage is a valid hash of the message
-        if (keccak256(message) != hashedMessage) revert CustomSmartWallet__InvalidMessageHash();
-
-        // extract data from the message
-
-        // first 20 bytes are the token address
-        address token = address(bytes20(message[:20]));
-        // next 32 bytes are the amount
-        uint256 amount = uint256(bytes32(message[20:52]));
+        // verify amount is below limit
+        if (amount > withdrawLimit) revert CustomSmartWallet__WithdrawLimitExceeded();
 
         // transfer the funds
         IERC20(token).transfer(msg.sender, amount);

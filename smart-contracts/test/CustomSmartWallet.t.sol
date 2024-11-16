@@ -6,10 +6,6 @@ import { Test } from "forge-std/src/Test.sol";
 import { Erc20Mock } from "../src/mocks/Erc20Mock.sol";
 import { CustomSmartWallet } from "../src/custom-smart-wallet/CustomSmartWallet.sol";
 
-interface IERC20 {
-    function balanceOf(address account) external view returns (uint256);
-}
-
 /// @dev If this is your first time with Forge, read this tutorial in the Foundry Book:
 /// https://book.getfoundry.sh/forge/writing-tests
 contract CustomSmartWalletTest is Test {
@@ -36,9 +32,15 @@ contract CustomSmartWalletTest is Test {
         bytes32 hashedMessage = 0xe4d0913917d989d1ab859b505e44b82b5f965f2bee770b1326e454b78a4bd461;
         bytes32 r = 0x15c0a726128247fa8915857e30cc0454ca7a6c6ebaecf5b06e0911ec53e30ff6;
         bytes32 s = 0x5f24e9f8ad87806c13a060d21e731d4ac90ed0fda618dd55a8a93b4c16a592b4;
-        bytes memory message =
-            hex"5615deb798bb3e4dfa0139dfa1b3d433cc23b72f0000000000000000000000000000000000000000000000000de0b6b3a7640000";
+        // bytes memory message =
+        // hex"5615deb798bb3e4dfa0139dfa1b3d433cc23b72f0000000000000000000000000000000000000000000000000de0b6b3a7640000";
 
-        customSmartWallet.claimFunds({ hashedMessage: hashedMessage, r: r, s: s, message: message });
+        customSmartWallet.claimFunds({
+            hashedMessage: hashedMessage,
+            r: r,
+            s: s,
+            token: address(mockErc20),
+            amount: 10e18
+        });
     }
 }
