@@ -24,8 +24,8 @@ export function useWalletBalance({
   useEffect(() => {
     const fetchBalance = async () => {
       try {
+        console.log("wallet balance", balance);
         setIsLoading(true);
-
         const response = await fetch(
           `/api/usdcBalance?address=${walletAddress}&network=${network}`
         );
@@ -36,7 +36,11 @@ export function useWalletBalance({
           throw new Error(data.error || "Failed to fetch balance");
         }
 
-        setBalance(data.data[0].amount);
+        if (data.data.length > 0) {
+          setBalance(data.data[0].amount);
+        }
+
+        setError(null);
       } catch (err) {
         setError(
           err instanceof Error ? err : new Error("Failed to fetch balance")
@@ -47,9 +51,20 @@ export function useWalletBalance({
       }
     };
 
+    // Initial fetch
     if (walletAddress) {
       fetchBalance();
     }
+
+    // Set up polling every 5 seconds
+    const intervalId = setInterval(() => {
+      if (walletAddress) {
+        fetchBalance();
+      }
+    }, 5000);
+
+    // Cleanup interval on unmount or when dependencies change
+    return () => clearInterval(intervalId);
   }, [walletAddress, network]);
 
   return { balance, isLoading, error };

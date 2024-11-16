@@ -7,7 +7,7 @@ import { isEthereumWallet } from "@dynamic-labs/ethereum";
 const DOMAIN = {
   name: "CustomSmartWallet",
   version: "1",
-  chainId: 1, // mainnet by default
+  chainId: 84532, // base sepolia by default
 } as const;
 
 const TYPES = {
@@ -28,7 +28,7 @@ export async function createClaimSignature({
   primaryWallet,
   amount,
   nonce,
-  chainId = 1,
+  chainId = 84532,
 }: SignatureParams) {
   try {
     if (!isEthereumWallet(primaryWallet)) {

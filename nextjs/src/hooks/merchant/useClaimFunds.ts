@@ -8,27 +8,31 @@ import { EthereumWallet } from "@dynamic-labs/ethereum-core";
 import { isEthereumWallet } from "@dynamic-labs/ethereum";
 
 interface UseClaimFundsProps {
-  smartWalletAddress: Address;
   network: NetworkType;
-  wallet: WalletClient | `0x${string}`; // Can accept wallet client or private key
 }
 
 interface ClaimFundsResult {
-  claimFunds: (signature: string, amount: bigint) => Promise<void>;
+  claimFunds: (
+    signature: string,
+    amount: bigint,
+    smartWalletAddress: string
+  ) => Promise<void>;
   isLoading: boolean;
   error: Error | null;
 }
 
 export function useClaimFunds({
   network,
-  wallet,
-  smartWalletAddress,
 }: UseClaimFundsProps): ClaimFundsResult {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const { primaryWallet } = useDynamicContext();
 
-  const claimFunds = async (signature: string, amount: bigint) => {
+  const claimFunds = async (
+    signature: string,
+    amount: bigint,
+    smartWalletAddress: Address
+  ) => {
     try {
       setIsLoading(true);
       setError(null);

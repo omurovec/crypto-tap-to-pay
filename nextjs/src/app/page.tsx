@@ -30,6 +30,7 @@ import { DEFAULT_NETWORK } from "@/config/networks";
 import { useSmartWalletAddress } from "@/hooks/useSmartWalletAddress";
 import { useDeploySmartWallet } from "@/hooks/useDeploySmartWallet";
 import logo from "@/assets/logo.jpg";
+import { useClaimFunds } from "@/hooks/merchant/useClaimFunds";
 
 export default function Home() {
   const { deploySmartWallet, isLoading: isDeployingSmartWallet } =
@@ -38,7 +39,7 @@ export default function Home() {
     });
   const isLoggedIn = useIsLoggedIn();
   const eoaAddress = useWalletAddress();
-  console.log("eoaAddress", eoaAddress);
+
   const {
     smartWalletAddress,
     isLoading: isSmartWalletAddressLoading,
@@ -50,6 +51,10 @@ export default function Home() {
 
   const smartWalletExists =
     smartWalletAddress != "0x0000000000000000000000000000000000000000";
+
+  if (smartWalletExists) {
+    console.log("smartWalletExists", smartWalletAddress);
+  }
 
   const {
     balance: walletBalance,
@@ -71,15 +76,15 @@ export default function Home() {
     navigator.clipboard.writeText(smartWalletAddress || "");
   };
 
-  useEffect(() => {
-    if (!smartWalletExists) {
-      deploySmartWallet(
-        eoaAddress as `0x${string}`,
-        BigInt(100000000),
-        "0x705f3124762253c8ef6b7a39f6c0ab9a6c2961ff"
-      );
-    }
-  }, [smartWalletExists]);
+  // useEffect(() => {
+  //   if (!smartWalletExists) {
+  //     deploySmartWallet(
+  //       eoaAddress as `0x${string}`,
+  //       BigInt(100000000),
+  //       "0x705f3124762253c8ef6b7a39f6c0ab9a6c2961ff"
+  //     );
+  //   }
+  // }, [smartWalletExists]);
 
   if (!isLoggedIn) {
     return (

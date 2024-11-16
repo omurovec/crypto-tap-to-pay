@@ -17,15 +17,17 @@ import { receiveTone, sendTone } from "@/utils/ggwave";
 import Image from "next/image";
 import HoldNearReader from "@/public/hold_reader.gif";
 import SuccessImg from "@/public/success.gif";
+import { DEFAULT_NETWORK } from "@/config/networks";
+import { useClaimFunds } from "@/hooks/merchant/useClaimFunds";
 
-const convertTypedArray = (src, type) => {
+const convertTypedArray = (src: any, type: any) => {
   var buffer = new ArrayBuffer(src.byteLength);
   var baseView = new src.constructor(buffer).set(src);
   return new type(buffer);
 };
 
 // Decode Base64 to hex string
-function decodeBase64ToHex(base64) {
+function decodeBase64ToHex(base64: any) {
   const binary = atob(base64);
   const bytes = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i++) {
@@ -35,11 +37,11 @@ function decodeBase64ToHex(base64) {
 }
 
 // Helper function to convert a byte array to a hex string
-function bytesToHex(bytes) {
+function bytesToHex(bytes: any) {
   return (
     "0x" +
     Array.from(bytes)
-      .map((byte) => byte.toString(16).padStart(2, "0"))
+      .map((byte: any) => byte.toString(16).padStart(2, "0"))
       .join("")
   );
 }
@@ -48,6 +50,9 @@ export default function ReceiveDrawer() {
   const [inputValue, setInputValue] = useState("");
   const [sendAmount, setSendAmount] = useState<number>();
   const [received, setReceived] = useState(false);
+  const { claimFunds } = useClaimFunds({
+    network: DEFAULT_NETWORK,
+  });
 
   const handleSubmission = async () => {
     setSendAmount(Number(inputValue));
@@ -63,7 +68,18 @@ export default function ReceiveDrawer() {
               let [address, signature] = res.split(" ").map(decodeBase64ToHex);
               console.log(address, signature);
               if (address && signature) {
+                console.log("claimFundsParams", {
+                  signature,
+                  amount: BigInt(inputValue) * BigInt(10) ** BigInt(6),
+                  smartWalletAddress: address,
+                });
+
                 // TODO: Send transaction
+                claimFunds(
+                  signature,
+                  BigInt(inputValue) * BigInt(10) ** BigInt(6),
+                  address
+                );
                 setReceived(true);
               }
             } catch (e) {
