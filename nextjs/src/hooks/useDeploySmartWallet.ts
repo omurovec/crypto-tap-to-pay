@@ -60,6 +60,31 @@ export function useDeploySmartWallet({
       });
 
       // TODO: add funding of wallet with small native token balance
+      // make call to api/fund-smart-wallet
+      try {
+        const response = await fetch(`/api/fund-smart-wallet`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            address: preComputedWalletAddress,
+            network: network,
+          }),
+        });
+
+        if (!response.ok) {
+          const error = new Error("Failed to fund smart wallet");
+          setError(error);
+          throw error;
+        }
+
+        // check if response is okey
+      } catch (err) {
+        setError(
+          err instanceof Error ? err : new Error("Failed to fund smart wallet")
+        );
+      }
 
       const { request } = await client.simulateContract({
         address: DEPLOYMENT_ADDRESSES[network] as `0x${string}`,
