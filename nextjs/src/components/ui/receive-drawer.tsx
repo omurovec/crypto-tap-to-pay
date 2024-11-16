@@ -101,7 +101,9 @@ export default function ReceiveDrawer() {
           {received ? (
             <>
               <DrawerHeader>
-                <DrawerTitle>Received</DrawerTitle>
+                <DrawerTitle className="text-2xl font-bold mb-8">
+                  Received
+                </DrawerTitle>
                 <DrawerDescription className="flex items-center justify-center pb-2">
                   <div className="relative h-40 w-40 rounded-full overflow-hidden bg-slate-100">
                     <Image
@@ -116,7 +118,7 @@ export default function ReceiveDrawer() {
               <DrawerFooter>
                 <DrawerClose>
                   <Button
-                    className="w-full"
+                    className="w-full h-14 text-lg rounded-2xl"
                     onClick={() => {
                       setInputValue("");
                       setSendAmount(undefined);
@@ -130,7 +132,9 @@ export default function ReceiveDrawer() {
           ) : sendAmount !== undefined ? (
             <>
               <DrawerHeader>
-                <DrawerTitle>Requesting</DrawerTitle>
+                <DrawerTitle className="text-2xl font-bold mb-8">
+                  Requesting
+                </DrawerTitle>
                 <DrawerDescription className="flex items-center justify-center p-8 pb-2">
                   <div className="relative h-40 w-40 rounded-full overflow-hidden bg-slate-100">
                     <Image
