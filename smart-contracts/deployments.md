@@ -15,7 +15,7 @@
 - https://evm-testnet.flowscan.io/address/0x3c6dc0dea2b2f20ee7a191fd76604fe686ad2914
 - https://explorer.sepolia.mantle.xyz/address/0x3c6dc0dea2b2f20ee7a191fd76604fe686ad2914
 - https://sepolia.scrollscan.com/address/0x3c6dc0dea2b2f20ee7a191fd76604fe686ad2914
-- https://sepolia.basescan.org/address/0x3c6dc0dea2b2f20ee7a191fd76604fe686ad2914
+- https://sepolia.basescan.org/address/0xd917c0b94d89309c51dbc070dea5bf780a319ba2
 - https://amoy.polygonscan.com/address/0x3c6dc0dea2b2f20ee7a191fd76604fe686ad2914
 - https://explorer.testnet.zircuit.com/address/0x3c6dc0dea2b2f20ee7a191fd76604fe686ad2914
 - https://explorer-holesky.morphl2.io/address/0x3c6dc0dea2b2f20ee7a191fd76604fe686ad2914
