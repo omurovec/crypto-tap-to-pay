@@ -14,6 +14,8 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { receiveTone, sendTone } from "@/utils/ggwave";
+import Image from "next/image";
+import HoldNearReader from "@/public/hold-near-reader.png";
 
 const convertTypedArray = (src, type) => {
   var buffer = new ArrayBuffer(src.byteLength);
@@ -85,17 +87,15 @@ export default function ReceiveDrawer() {
             <>
               <DrawerHeader>
                 <DrawerTitle>Received</DrawerTitle>
-                <DrawerDescription className="flex items-center justify-center p-8 pb-2">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="56"
-                    height="56"
-                    fill="lightgreen"
-                    viewBox="0 0 16 16"
-                  >
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                    <path d="m10.97 4.97-.02.022-3.473 4.425-2.093-2.094a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-1.071-1.05" />
-                  </svg>
+                <DrawerDescription className="flex items-center justify-center pb-2">
+                  <div className="relative h-40 w-40 rounded-full overflow-hidden bg-slate-100">
+                    <Image
+                      src={HoldNearReader}
+                      alt="Loading animation"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
                 </DrawerDescription>
               </DrawerHeader>
               <DrawerFooter>
