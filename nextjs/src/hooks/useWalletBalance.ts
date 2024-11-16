@@ -27,7 +27,7 @@ export function useWalletBalance({
         setIsLoading(true);
 
         const response = await fetch(
-          `/api/usdc-balance?address=${walletAddress}&network=${network}`
+          `/api/usdcBalance?address=${walletAddress}&network=${network}`
         );
         const data = await response.json();
 
