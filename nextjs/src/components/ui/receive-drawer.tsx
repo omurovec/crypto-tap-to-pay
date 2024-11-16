@@ -76,7 +76,9 @@ export default function ReceiveDrawer() {
     <div className="flex-1">
       <Drawer className="flex-1">
         <DrawerTrigger className="w-full">
-          <Button className="w-full h-14 bg-slate-800">Receive</Button>
+          <Button className="w-full h-14 bg-slate-500 text-lg rounded-2xl">
+            Receive
+          </Button>
         </DrawerTrigger>
         <DrawerContent>
           {received ? (

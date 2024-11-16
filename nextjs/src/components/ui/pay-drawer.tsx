@@ -19,14 +19,6 @@ import { sendTone, receiveTone } from "@/utils/ggwave";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 
 const DECIMALS = 6n;
-const PRIVATE_KEY =
-  "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
-
-const convertTypedArray = (src, type) => {
-  var buffer = new ArrayBuffer(src.byteLength);
-  var baseView = new src.constructor(buffer).set(src);
-  return new type(buffer);
-};
 
 // Helper function to convert a hex string to a byte array
 function hexToBytes(hex) {
@@ -65,7 +57,7 @@ export default function PayDrawer() {
         const address = primaryWallet.address;
 
         await sendTone(
-          encodeHexToBase64(address) + " " + encodeHexToBase64(signature),
+          encodeHexToBase64(address) + " " + encodeHexToBase64(signature)
         );
         setTimeout(() => setSent(true), 10000);
       } catch (e) {
@@ -79,7 +71,10 @@ export default function PayDrawer() {
       <Drawer>
         {/* Pay modal */}
         <DrawerTrigger className="w-full">
-          <Button onClick={initPayment} className="w-full h-14">
+          <Button
+            onClick={initPayment}
+            className="w-full h-14 text-lg rounded-2xl"
+          >
             Pay
           </Button>
         </DrawerTrigger>
