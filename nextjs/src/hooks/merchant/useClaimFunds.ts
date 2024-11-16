@@ -14,9 +14,9 @@ interface UseClaimFundsProps {
 
 interface ClaimFundsResult {
   claimFunds: (
+    primaryWallet: any,
     signature: string,
     amount: bigint,
-    nonce: bigint,
     smartWalletAddress: string
   ) => Promise<void>;
   isLoading: boolean;
@@ -25,15 +25,14 @@ interface ClaimFundsResult {
 
 export function useClaimFunds({
   network,
-  primaryWallet,
 }: UseClaimFundsProps): ClaimFundsResult {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   const claimFunds = async (
+    primaryWallet: any,
     signature: string,
     amount: bigint,
-    nonce: bigint,
     smartWalletAddress: string
   ) => {
     try {
