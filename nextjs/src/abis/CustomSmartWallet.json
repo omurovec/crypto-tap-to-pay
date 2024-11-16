@@ -3,37 +3,73 @@
     "type": "constructor",
     "inputs": [
       { "name": "owner", "type": "address", "internalType": "address" },
-      { "name": "_px", "type": "bytes32", "internalType": "bytes32" },
-      { "name": "_py", "type": "bytes32", "internalType": "bytes32" },
       {
         "name": "initialWithdrawLimit",
         "type": "uint256",
         "internalType": "uint256"
-      }
+      },
+      { "name": "_token", "type": "address", "internalType": "address" }
     ],
     "stateMutability": "nonpayable"
   },
   {
     "type": "function",
+    "name": "CLAIM_TYPEHASH",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "bytes32", "internalType": "bytes32" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "claimFunds",
     "inputs": [
-      { "name": "hashedMessage", "type": "bytes32", "internalType": "bytes32" },
-      { "name": "r", "type": "bytes32", "internalType": "bytes32" },
-      { "name": "s", "type": "bytes32", "internalType": "bytes32" },
-      { "name": "token", "type": "address", "internalType": "address" },
-      { "name": "amount", "type": "uint256", "internalType": "uint256" }
+      { "name": "signature", "type": "bytes", "internalType": "bytes" },
+      {
+        "name": "claim",
+        "type": "tuple",
+        "internalType": "struct CustomSmartWallet.Claim",
+        "components": [
+          { "name": "amount", "type": "uint256", "internalType": "uint256" },
+          { "name": "nonce", "type": "uint256", "internalType": "uint256" }
+        ]
+      }
     ],
     "outputs": [],
     "stateMutability": "nonpayable"
   },
   {
     "type": "function",
+    "name": "eip712Domain",
+    "inputs": [],
+    "outputs": [
+      { "name": "fields", "type": "bytes1", "internalType": "bytes1" },
+      { "name": "name", "type": "string", "internalType": "string" },
+      { "name": "version", "type": "string", "internalType": "string" },
+      { "name": "chainId", "type": "uint256", "internalType": "uint256" },
+      {
+        "name": "verifyingContract",
+        "type": "address",
+        "internalType": "address"
+      },
+      { "name": "salt", "type": "bytes32", "internalType": "bytes32" },
+      { "name": "extensions", "type": "uint256[]", "internalType": "uint256[]" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "hasFunds",
     "inputs": [
-      { "name": "token", "type": "address", "internalType": "address" },
       { "name": "amount", "type": "uint256", "internalType": "uint256" }
     ],
     "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "nonce",
+    "inputs": [],
+    "outputs": [{ "name": "", "type": "uint256", "internalType": "uint256" }],
     "stateMutability": "view"
   },
   {
@@ -69,6 +105,31 @@
     "stateMutability": "nonpayable"
   },
   {
+    "type": "function",
+    "name": "verifyClaim",
+    "inputs": [
+      { "name": "signature", "type": "bytes", "internalType": "bytes" },
+      {
+        "name": "claim",
+        "type": "tuple",
+        "internalType": "struct CustomSmartWallet.Claim",
+        "components": [
+          { "name": "amount", "type": "uint256", "internalType": "uint256" },
+          { "name": "nonce", "type": "uint256", "internalType": "uint256" }
+        ]
+      },
+      { "name": "signer", "type": "address", "internalType": "address" }
+    ],
+    "outputs": [{ "name": "", "type": "bool", "internalType": "bool" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "event",
+    "name": "EIP712DomainChanged",
+    "inputs": [],
+    "anonymous": false
+  },
+  {
     "type": "event",
     "name": "OwnershipTransferred",
     "inputs": [
@@ -89,12 +150,12 @@
   },
   {
     "type": "error",
-    "name": "CustomSmartWallet__InvalidPublicKey",
+    "name": "CustomSmartWallet__InvalidSignature",
     "inputs": []
   },
   {
     "type": "error",
-    "name": "CustomSmartWallet__InvalidSignature",
+    "name": "CustomSmartWallet__SignatureAlreadyUsed",
     "inputs": []
   },
   {
@@ -102,6 +163,20 @@
     "name": "CustomSmartWallet__WithdrawLimitExceeded",
     "inputs": []
   },
+  { "type": "error", "name": "ECDSAInvalidSignature", "inputs": [] },
+  {
+    "type": "error",
+    "name": "ECDSAInvalidSignatureLength",
+    "inputs": [
+      { "name": "length", "type": "uint256", "internalType": "uint256" }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "ECDSAInvalidSignatureS",
+    "inputs": [{ "name": "s", "type": "bytes32", "internalType": "bytes32" }]
+  },
+  { "type": "error", "name": "InvalidShortString", "inputs": [] },
   {
     "type": "error",
     "name": "OwnableInvalidOwner",
@@ -115,5 +190,10 @@
     "inputs": [
       { "name": "account", "type": "address", "internalType": "address" }
     ]
+  },
+  {
+    "type": "error",
+    "name": "StringTooLong",
+    "inputs": [{ "name": "str", "type": "string", "internalType": "string" }]
   }
 ]
