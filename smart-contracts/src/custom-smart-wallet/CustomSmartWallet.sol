@@ -71,6 +71,9 @@ contract CustomSmartWallet is Ownable, EIP712 {
         // mark signature as used
         usedSignatures[signature] = true;
 
+        // increment nonce
+        nonce++;
+
         // transfer the funds
         IERC20(token).transfer(msg.sender, claim.amount);
         emit CustomSmartWallet__Transferred(address(this), msg.sender, token, claim.amount);

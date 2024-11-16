@@ -79,7 +79,7 @@ export default function PayDrawer() {
       <Drawer>
         {/* Pay modal */}
         <DrawerTrigger className="w-full">
-          <Button onClick={initPayment} className="w-full">
+          <Button onClick={initPayment} className="w-full h-14">
             Pay
           </Button>
         </DrawerTrigger>

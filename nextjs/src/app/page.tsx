@@ -26,12 +26,19 @@ export default function Home() {
   const isLoggedIn = useIsLoggedIn();
   const { initExportProcess } = useEmbeddedReveal();
 
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText("0x124..568");
+  };
+
   return isLoggedIn ? (
     <div className="w-full">
       {/* Header */}
-      <div>
-        <p>Balance</p>
-        <h1>0.00</h1>
+      <div className="flex w-full flex-col items-center mt-36">
+        <p className="text-muted-foreground text-sm">Current balance</p>
+        <h1 className="text-6xl font-bold mt-2">$100.00</h1>
+        <p className="mt-4 text-muted-foreground" onClick={copyToClipboard}>
+          0x124..568
+        </p>
       </div>
 
       {/* History */}
