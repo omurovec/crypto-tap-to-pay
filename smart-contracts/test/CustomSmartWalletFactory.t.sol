@@ -14,7 +14,7 @@ contract CustomSmartWalletFactoryTest is Test {
 
     bytes32 P_X = bytes32(0xd961005d2b19b117c27187fb4bffc0d5b96c8f39eb0c7476fb69e6efc88fa5be);
     bytes32 P_Y = bytes32(0x848150bcbdc70e6545f27070b840f9f5188bb8cad0cab28e107e200be9cde9d2);
-    uint256 INITIAL_LIMIT = 1000;
+    uint256 INITIAL_LIMIT = 100e18;
 
     function setUp() public virtual {
         // deploy CustomSmartWalletFactory
@@ -29,20 +29,12 @@ contract CustomSmartWalletFactoryTest is Test {
         assert(deployedPre == false);
 
         // deploy CustomSmartWallet belonging to address(this)
-        customSmartWalletAddress = customSmartWalletFactory.createSmartWallet(
-            bytes32(0xd961005d2b19b117c27187fb4bffc0d5b96c8f39eb0c7476fb69e6efc88fa5be),
-            bytes32(0x848150bcbdc70e6545f27070b840f9f5188bb8cad0cab28e107e200be9cde9d2),
-            1000
-        );
+        customSmartWalletAddress = customSmartWalletFactory.createSmartWallet(P_X, P_Y, INITIAL_LIMIT);
     }
 
     function test_FactoryPrecomputeWallet() external {
         // deploy CustomSmartWallet belonging to address(this)
-        customSmartWalletAddress = customSmartWalletFactory.createSmartWallet(
-            bytes32(0xd961005d2b19b117c27187fb4bffc0d5b96c8f39eb0c7476fb69e6efc88fa5be),
-            bytes32(0x848150bcbdc70e6545f27070b840f9f5188bb8cad0cab28e107e200be9cde9d2),
-            1000
-        );
+        customSmartWalletAddress = customSmartWalletFactory.createSmartWallet(P_X, P_Y, INITIAL_LIMIT);
 
         // assert wallet address can be precomputed
         assert(
@@ -59,11 +51,7 @@ contract CustomSmartWalletFactoryTest is Test {
 
     function test_FactoryGetWallet() external {
         // deploy CustomSmartWallet belonging to address(this)
-        customSmartWalletAddress = customSmartWalletFactory.createSmartWallet(
-            bytes32(0xd961005d2b19b117c27187fb4bffc0d5b96c8f39eb0c7476fb69e6efc88fa5be),
-            bytes32(0x848150bcbdc70e6545f27070b840f9f5188bb8cad0cab28e107e200be9cde9d2),
-            1000
-        );
+        customSmartWalletAddress = customSmartWalletFactory.createSmartWallet(P_X, P_Y, INITIAL_LIMIT);
 
         // assert wallet address is stored in mapping
         (address walletAddress, bool deployedPost) =
