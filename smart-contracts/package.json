@@ -8,7 +8,9 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.0.1",
-    "@safe-global/safe-smart-account": "github:safe-global/safe-smart-account"
+    "@safe-global/safe-smart-account": "github:safe-global/safe-smart-account",
+    "elliptic": "^6.6.1",
+    "ethers": "^6.13.4"
   },
   "devDependencies": {
     "forge-std": "github:foundry-rs/forge-std#v1.8.1",

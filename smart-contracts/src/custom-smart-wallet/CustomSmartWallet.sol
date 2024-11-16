@@ -11,9 +11,9 @@ error CustomSmartWallet__InvalidSignature();
 error CustomSmartWallet__InvalidMessageHash();
 
 // TODO:
-// [ ] - Specify limit
-// [ ] - Keep track of funds (might not have to do that bc of `hasFunds` function)
-// [ ] - Extract data from message
+// [X] - Specify limit
+// [X] - Keep track of funds (might not have to do that bc of `hasFunds` function)
+// [X] - Extract data from message
 
 contract CustomSmartWallet is Ownable {
     using P256 for bytes32;
