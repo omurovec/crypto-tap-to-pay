@@ -50,6 +50,8 @@ export function useClaimFunds({
         throw new Error("Wallet is not an Ethereum wallet");
       }
 
+      await primaryWallet.switchNetwork(network);
+
       // get nonce
       // get the wallet address by making a read call
       const nonce = await client.readContract({
