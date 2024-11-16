@@ -9,14 +9,16 @@ event CustomSmartWalletFactory__SmartWalletCreated(address indexed owner, addres
 
 contract CustomSmartWalletFactory {
     // Mapping from owner address to their deployed smart wallet address
-    mapping(address => address) public smartWallets;
+    mapping(address owner => address smartWallet) public smartWallets;
 
     function createSmartWallet(bytes32 px, bytes32 py, uint256 initialWithdrawLimit) external returns (address) {
         // Check if wallet already exists for this owner
         if (smartWallets[msg.sender] != address(0)) revert CustomSmartWalletFactory__WalletAlreadyExists();
 
         // Deploy new CustomSmartWallet
-        CustomSmartWallet smartWallet = new CustomSmartWallet(msg.sender, px, py, initialWithdrawLimit);
+        ///@dev https://docs.soliditylang.org/en/latest/control-structures.html#salted-contract-creations-create2
+        bytes32 salt = bytes32(bytes20(uint160(address(msg.sender))));
+        CustomSmartWallet smartWallet = new CustomSmartWallet{ salt: salt }(msg.sender, px, py, initialWithdrawLimit);
 
         // Store wallet address in mapping
         smartWallets[msg.sender] = address(smartWallet);
@@ -24,5 +26,45 @@ contract CustomSmartWalletFactory {
         emit CustomSmartWalletFactory__SmartWalletCreated(msg.sender, address(smartWallet));
 
         return address(smartWallet);
+    }
+
+    function precomputeWalletAddress(
+        address ownerAddress,
+        bytes32 px,
+        bytes32 py,
+        uint256 initialWithdrawLimit
+    )
+        public
+        view
+        returns (address)
+    {
+        bytes memory creationCodeValue = abi.encodePacked(
+            type(CustomSmartWallet).creationCode, abi.encode(ownerAddress, px, py, initialWithdrawLimit)
+        );
+        bytes32 hash = keccak256(
+            abi.encodePacked(
+                bytes1(0xff),
+                address(this),
+                bytes32(bytes20(uint160(address(ownerAddress)))),
+                keccak256(creationCodeValue)
+            )
+        );
+        return address(uint160(uint256(hash)));
+    }
+
+    function getWalletAddress(
+        address owner,
+        bytes32 px,
+        bytes32 py,
+        uint256 initialWithdrawLimit
+    )
+        public
+        view
+        returns (address smartWallet, bool deployed)
+    {
+        smartWallet = precomputeWalletAddress(owner, px, py, initialWithdrawLimit);
+        if (smartWallets[owner] != address(0)) {
+            deployed = true;
+        }
     }
 }
