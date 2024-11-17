@@ -15,6 +15,7 @@ deploy_test_dry:
 	forge script script/DeployFactory.s.sol -vvvv --rpc-url polygon_amoy
 	forge script script/DeployFactory.s.sol -vvvv --rpc-url zircuit_test
 	forge script script/DeployFactory.s.sol -vvvv --rpc-url morph_test --verifier=blockscout
+	forge script script/DeployFactory.s.sol -vvvv --rpc-url bitkub_test --verifier=blockscout --legacy
 
 deploy:
 	forge script script/DeployFactory.s.sol -vvvv --rpc-url flow --verify --broadcast --verifier=blockscout
@@ -33,3 +34,4 @@ deploy_test:
 	forge script script/DeployFactory.s.sol -vvvv --rpc-url polygon_amoy --verify --broadcast
 	forge script script/DeployFactory.s.sol -vvvv --rpc-url zircuit_test --verify --broadcast
 	forge script script/DeployFactory.s.sol -vvvv --rpc-url morph_test --verify --broadcast --verifier=blockscout
+	forge script script/DeployFactory.s.sol -vvvv --rpc-url bitkub_test --verify --broadcast --verifier=blockscout --legacy

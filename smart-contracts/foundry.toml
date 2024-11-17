@@ -35,6 +35,8 @@
   zircuit_test = { key = "${ZIRCUIT_TEST_SCAN_KEY}", chain = 48899, url = "${ZIRCUIT_TEST_SCAN_URL}" }
   morph = { key = "", chain = 2818, url = "${MORPH_SCAN_URL}" }
   morph_test = { key = "", chain = 2810, url = "${MORPH_TEST_SCAN_URL}" }
+  bitkub = { key = "", chain = 96, url = "${BITKUB_SCAN_URL}" }
+  bitkub_test = { key = "", chain = 25925, url = "${BITKUB_TEST_SCAN_URL}" }
 
 [fmt]
   bracket_spacing = true
@@ -61,3 +63,5 @@
   zircuit_test = "${ZIRCUIT_TEST_RPC_URL}"
   morph = "${MORPH_RPC_URL}"
   morph_test = "${MORPH_TEST_RPC_URL}"
+  bitkub = "${BITKUB_RPC_URL}"
+  bitkub_test = "${BITKUB_TEST_RPC_URL}"
