@@ -61,7 +61,7 @@ export function useWalletBalance({
       if (walletAddress) {
         fetchBalance();
       }
-    }, 5000);
+    }, 2000);
 
     // Cleanup interval on unmount or when dependencies change
     return () => clearInterval(intervalId);
