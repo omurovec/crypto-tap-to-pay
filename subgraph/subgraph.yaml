@@ -8,9 +8,9 @@ dataSources:
     name: CustomSmartWalletFactory
     network: base-sepolia
     source:
-      address: "0x705f3124762253c8ef6b7a39f6c0ab9a6c2961ff"
+      address: "0xd917c0b94d89309c51dbc070dea5bf780a319ba2"
       abi: CustomSmartWalletFactory
-      startBlock: 18000037
+      startBlock: 18005223
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
